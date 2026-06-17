@@ -69,57 +69,6 @@ nav a, footer a { color: var(--muted); transition: color 150ms ease; }
 nav a:hover, footer a:hover { color: var(--text); }
 nav a.nav-active { color: var(--text); font-weight: 600; }
 
-/* Mobile bottom nav — hidden on desktop */
-.mobile-nav {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 110;
-  align-items: center;
-  gap: 3px;
-  padding: 5px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.06);
-  animation: nav-pill-enter 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 600ms both;
-}
-.mobile-nav-link {
-  padding: 8px 18px;
-  border-radius: 99px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 160ms ease, background 200ms cubic-bezier(0.34, 1.4, 0.64, 1);
-  white-space: nowrap;
-}
-.mobile-nav-link:hover { color: var(--text); }
-.mobile-nav-link.mobile-nav-active {
-  background: var(--text);
-  color: var(--bg);
-  font-weight: 600;
-}
-.mobile-nav-divider {
-  width: 1px;
-  height: 22px;
-  background: var(--line);
-  margin: 0 2px;
-  flex-shrink: 0;
-}
-.mobile-nav-theme {
-  width: 36px !important;
-  height: 36px !important;
-  border: none !important;
-  background: transparent !important;
-  border-radius: 50% !important;
-  flex-shrink: 0;
-  color: var(--muted);
-}
 
 .header-actions {
   display: flex;
@@ -755,22 +704,16 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
 /* ── Responsive — mobile (≤ 660px) ─────────────────────────── */
 @media (max-width: 660px) {
-  /* Header — hide everything on mobile (all controls move to bottom pill) */
-  .site-header { height: 56px; }
-  .desktop-nav { display: none; }
-  .header-actions { display: none; }
-
-  /* Show the bottom mobile nav pill */
-  .mobile-nav { display: flex; }
+  /* Header — compact, same layout as desktop */
+  .site-header { height: 54px; }
+  .site-header nav { gap: 14px; font-size: 13px; }
+  .command-trigger { display: none; }
 
   /* Scroll anchors */
-  .content-section { scroll-margin-top: 68px; }
+  .content-section { scroll-margin-top: 66px; }
 
-  /* Breathing room below sticky header */
-  .page-shell { margin-top: 28px; padding-bottom: 96px; }
-
-  /* Toast clears the nav pill */
-  .toast { bottom: 82px; }
+  /* Space between header and first section */
+  .page-shell { margin-top: 28px; }
 
   /* Intro */
   .intro { align-items: flex-start; gap: 14px; }
