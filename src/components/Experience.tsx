@@ -10,7 +10,7 @@ export default function Experience() {
 
   return (
     <section id="work" className="content-section">
-      <h2>Experience</h2>
+      <h2>A record of measurable outcomes.</h2>
       <div className="experience-list">
         {experiences.map((job, index) => {
           const isOpen = openIndex === index;
@@ -24,12 +24,12 @@ export default function Experience() {
                 onClick={() => toggleItem(index)}
               >
                 <span className="job-main">
-                  <strong>{job.company}</strong>
-                  {job.isCurrent && (
-                    <span className="working">
-                      <i /> Working
-                    </span>
-                  )}
+                  <span className="company-row">
+                    <strong>{job.company}</strong>
+                    {job.isCurrent && (
+                      <span className="working"><i /> Working</span>
+                    )}
+                  </span>
                   <small>{job.role}</small>
                 </span>
                 <span className="job-meta">

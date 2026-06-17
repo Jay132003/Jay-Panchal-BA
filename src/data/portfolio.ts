@@ -4,13 +4,13 @@ export const profile = {
   role: 'Business Analyst · Solutions Engineer',
   email: 'panchalj481@gmail.com',
   phone: '+919624287628',
-  bio: 'I turn complex business operations into simple, scalable digital workflows that save time, improve accuracy, and help teams make better decisions.',
-  status: 'Building automation systems across HR, CRM, logistics, and manufacturing.',
+  bio: 'A Business Analyst & Solutions Engineer crafting AI-driven workflows that turn complex operations into calm, scalable systems for the people who use them.',
+  status: 'Where business meets effortless automation.',
   resumePath: '/assets/jay-panchal-resume.pdf',
 } as const;
 
 export const socialLinks = [
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/PanchalJay' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/jjp01/' },
   { label: 'Website', href: 'https://jaypanchal.vercel.app' },
   { label: 'Email', href: 'mailto:panchalj481@gmail.com' },
   { label: 'Phone', href: 'tel:+919624287628' },
@@ -33,19 +33,22 @@ export const experiences: ExperienceItem[] = [
     location: 'Ahmedabad, India',
     isCurrent: true,
     details: [
-      'Delivered 100+ enterprise automation modules used by 100+ users across multiple industries.',
-      'Automated 70% of manual operations through validations, rules, escalations, reminders, and event-driven triggers.',
-      'Improved implementation speed by 50% with reusable components and modular workflow patterns.',
+      'Delivered 100+ enterprise automation modules — Leads, Visits, Quotations, Approvals, Dashboards, Data Management — used by 100+ users across multiple industries.',
+      'Automated 70% of manual operations by designing validations, workflow rules, escalations, reminders and event-driven triggers, reducing turnaround times significantly.',
+      'Led requirement discovery and documentation — BRDs, FRDs, user stories and workflow diagrams — aligning business needs with engineering and QA teams.',
+      'Accelerated implementation speed by 50% through reusable components, standardized logic templates and modular workflow patterns.',
+      'Owned UAT cycles and go-live execution, resolving blockers and streamlining release planning across cross-functional teams.',
+      'Enabled data-driven decision-making by designing automated dashboards and structured reporting workflows.',
     ],
   },
   {
-    company: 'Brainybeam Info-Tech',
+    company: 'Brainybeam Info-Tech Pvt Ltd',
     role: 'Frontend Development Intern',
     period: 'Jan 2024 – Jul 2024',
     location: 'Ahmedabad, India',
     details: [
-      'Built foundations in Android development, REST API integration, MySQLite, and client-server workflow design.',
-      'Developed technical depth for stronger collaboration on automation and process optimization projects.',
+      'Built foundational skills in Android development, REST API integration, MySQLite and client-server workflow design.',
+      'Strengthened technical depth to support engineering collaboration in automation and process optimization projects.',
     ],
   },
   {
@@ -54,8 +57,9 @@ export const experiences: ExperienceItem[] = [
     period: 'Jul 2023 – Aug 2023',
     location: 'Ahmedabad, India',
     details: [
-      'Trained in Python, SQL, web development, and manual testing through an intensive engineering program.',
-      'Built mini-projects involving data handling, API usage, backend logic, debugging, and documentation.',
+      'Trained in Python, SQL, Web Development and Manual Testing through an intensive software engineering program.',
+      'Developed mini-projects involving data handling, API usage and backend logic implementation.',
+      'Gained practical SDLC exposure and improved debugging, documentation and analytical skills.',
     ],
   },
 ];
@@ -78,22 +82,29 @@ export const impactItems = [
   },
 ] as const;
 
-export const capabilities = [
+export type CapabilityItem = {
+  title: string;
+  tags: string[];
+};
+
+export const capabilities: CapabilityItem[] = [
   {
     title: 'Business Analysis',
-    description:
-      'Requirement gathering, process mapping, BRD/FRD, user stories, acceptance criteria, RCA, and change management.',
+    tags: ['Requirement Gathering', 'Process Mapping', 'BRD / FRD', 'User Stories', 'Acceptance Criteria', 'Root Cause Analysis', 'Change Management'],
   },
   {
     title: 'Solutions Engineering',
-    description:
-      'Workflow automation, rule engine design, system configuration, logic building, optimization, and integrations.',
+    tags: ['Workflow Automation', 'Rule Engine Design', 'System Configuration', 'Logic Building', 'Optimization', 'Integrations'],
   },
   {
     title: 'Tools & Technology',
-    description: 'SQL, advanced Excel, Jira, Confluence, REST APIs, Figma, Git, Python, and web development.',
+    tags: ['SQL', 'Excel (Advanced)', 'Jira', 'Confluence', 'REST APIs', 'Figma', 'Git'],
   },
-] as const;
+  {
+    title: 'Soft Skills',
+    tags: ['Stakeholder Management', 'Client Communication', 'Problem Solving', 'Critical Thinking'],
+  },
+];
 
 export const education = {
   school: 'Gujarat Technological University',
@@ -101,6 +112,39 @@ export const education = {
   year: '2024',
   cgpa: '7.98',
 } as const;
+
+export const playlists = [
+  {
+    name: 'Alive',
+    url: 'https://open.spotify.com/playlist/72PKk905OzSzSog1N8OLmC',
+    id: '72PKk905OzSzSog1N8OLmC',
+    gradient: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
+  },
+  {
+    name: 'Mastana',
+    url: 'https://open.spotify.com/playlist/3GTTRXXSnKGdzmz6DuVlPp',
+    id: '3GTTRXXSnKGdzmz6DuVlPp',
+    gradient: 'linear-gradient(135deg, #f093fb, #f5576c)',
+  },
+  {
+    name: 'Human',
+    url: 'https://open.spotify.com/playlist/3fypkHaTRwz5lr7IMAF3q6',
+    id: '3fypkHaTRwz5lr7IMAF3q6',
+    gradient: 'linear-gradient(135deg, #200122, #6f0000)',
+  },
+  {
+    name: "The OG 90's",
+    url: 'https://open.spotify.com/playlist/10ZkQhj86xjY4RYWBodxy0',
+    id: '10ZkQhj86xjY4RYWBodxy0',
+    gradient: 'linear-gradient(135deg, #f7971e, #ffd200)',
+  },
+  {
+    name: 'Gujju Rocks',
+    url: 'https://open.spotify.com/playlist/6JmjJn7Ex6aZ3TppK4yMf2',
+    id: '6JmjJn7Ex6aZ3TppK4yMf2',
+    gradient: 'linear-gradient(135deg, #11998e, #38ef7d)',
+  },
+];
 
 export const quote = {
   text: 'Good systems do more than automate tasks. They give people clarity, speed, and room to do better work.',

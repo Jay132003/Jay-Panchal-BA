@@ -18,7 +18,7 @@ export default function Intro({ onCopyEmail }: IntroProps) {
     <>
       <section id="home" className="intro" aria-labelledby="intro-title">
         <div className="avatar" aria-hidden="true">
-          {profile.initials}
+          <img src="/assets/avatar.png" alt={profile.name} />
         </div>
         <div>
           <h1 id="intro-title">{profile.name}</h1>
