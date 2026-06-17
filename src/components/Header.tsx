@@ -8,10 +8,10 @@ type HeaderProps = {
 };
 
 const navLinks = [
-  { label: 'Home',   href: '#home',                              section: 'home'   },
-  { label: 'Work',   href: '#work',                              section: 'work'   },
-  { label: 'Skills', href: '#skills',                            section: 'skills' },
-  { label: 'Resume', href: '/assets/jay-panchal-resume.pdf',     section: ''       },
+  { label: 'Home',   href: '#home',                          section: 'home'   },
+  { label: 'Work',   href: '#work',                          section: 'work'   },
+  { label: 'Skills', href: '#skills',                        section: 'skills' },
+  { label: 'Resume', href: '/assets/jay-panchal-resume.pdf', section: ''       },
 ];
 
 export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSection }: HeaderProps) {
@@ -53,7 +53,7 @@ export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSec
         </div>
       </header>
 
-      {/* Mobile bottom nav pill — only visible on mobile */}
+      {/* Mobile bottom pill — nav links + theme toggle together */}
       <nav className="mobile-nav" aria-label="Mobile navigation">
         {navLinks.map(({ label, href, section }) => (
           <a
@@ -65,6 +65,14 @@ export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSec
             {label}
           </a>
         ))}
+        <span className="mobile-nav-divider" aria-hidden="true" />
+        <AnimatedThemeToggler
+          className="mobile-nav-theme"
+          theme={isDark ? 'dark' : 'light'}
+          onThemeChange={onToggleTheme}
+          variant="circle"
+          duration={500}
+        />
       </nav>
     </div>
   );

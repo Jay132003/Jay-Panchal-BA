@@ -104,6 +104,22 @@ nav a.nav-active { color: var(--text); font-weight: 600; }
   color: var(--bg);
   font-weight: 600;
 }
+.mobile-nav-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--line);
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+.mobile-nav-theme {
+  width: 36px !important;
+  height: 36px !important;
+  border: none !important;
+  background: transparent !important;
+  border-radius: 50% !important;
+  flex-shrink: 0;
+  color: var(--muted);
+}
 
 .header-actions {
   display: flex;
@@ -739,10 +755,10 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
 /* ── Responsive — mobile (≤ 660px) ─────────────────────────── */
 @media (max-width: 660px) {
-  /* Header — hide desktop nav, show only theme toggle */
-  .site-header { height: 56px; justify-content: flex-end; }
+  /* Header — hide everything on mobile (all controls move to bottom pill) */
+  .site-header { height: 56px; }
   .desktop-nav { display: none; }
-  .command-trigger { display: none; }
+  .header-actions { display: none; }
 
   /* Show the bottom mobile nav pill */
   .mobile-nav { display: flex; }
@@ -750,8 +766,8 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   /* Scroll anchors */
   .content-section { scroll-margin-top: 68px; }
 
-  /* Bottom padding so content clears the floating nav pill */
-  .page-shell { padding-bottom: 88px; }
+  /* Breathing room below sticky header */
+  .page-shell { margin-top: 28px; padding-bottom: 96px; }
 
   /* Toast clears the nav pill */
   .toast { bottom: 82px; }
