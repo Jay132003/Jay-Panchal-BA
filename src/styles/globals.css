@@ -69,6 +69,42 @@ nav a, footer a { color: var(--muted); transition: color 150ms ease; }
 nav a:hover, footer a:hover { color: var(--text); }
 nav a.nav-active { color: var(--text); font-weight: 600; }
 
+/* Mobile bottom nav — hidden on desktop */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 110;
+  align-items: center;
+  gap: 3px;
+  padding: 5px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.06);
+  animation: nav-pill-enter 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 600ms both;
+}
+.mobile-nav-link {
+  padding: 8px 18px;
+  border-radius: 99px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 160ms ease, background 200ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  white-space: nowrap;
+}
+.mobile-nav-link:hover { color: var(--text); }
+.mobile-nav-link.mobile-nav-active {
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -703,16 +739,22 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
 /* ── Responsive — mobile (≤ 660px) ─────────────────────────── */
 @media (max-width: 660px) {
-  /* Header — same layout as desktop, no pill, no border */
-  .site-header { height: 56px; }
-  .site-header nav {
-    gap: 16px;
-    font-size: 13px;
-  }
+  /* Header — hide desktop nav, show only theme toggle */
+  .site-header { height: 56px; justify-content: flex-end; }
+  .desktop-nav { display: none; }
   .command-trigger { display: none; }
+
+  /* Show the bottom mobile nav pill */
+  .mobile-nav { display: flex; }
 
   /* Scroll anchors */
   .content-section { scroll-margin-top: 68px; }
+
+  /* Bottom padding so content clears the floating nav pill */
+  .page-shell { padding-bottom: 88px; }
+
+  /* Toast clears the nav pill */
+  .toast { bottom: 82px; }
 
   /* Intro */
   .intro { align-items: flex-start; gap: 14px; }
@@ -737,14 +779,19 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   /* Footer */
   footer { grid-template-columns: 1fr; gap: 16px; }
 
-  /* Quote */
-  blockquote { padding: 24px 14px; }
+  /* Quote clears the nav pill */
+  blockquote { margin-bottom: 24px; padding: 24px 14px; }
 
   /* Command palette */
   .palette-backdrop { padding-top: 8vh; }
 
   /* Touch-friendly social links */
   .social-links a { padding: 3px 0; }
+}
+
+/* Extra small phones — shrink nav pill text */
+@media (max-width: 380px) {
+  .mobile-nav-link { padding: 8px 13px; font-size: 12.5px; }
 }
 
 /* ── Responsive — small phones (≤ 400px) ───────────────────── */
