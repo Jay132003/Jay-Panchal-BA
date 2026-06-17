@@ -10,14 +10,17 @@ import Footer from './components/Footer';
 import CommandPalette from './components/CommandPalette';
 import Toast from './components/Toast';
 import ScrollToTop from './components/ScrollToTop';
+import LoadingScreen from './components/LoadingScreen';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
+import { useIntersection } from './hooks/useIntersection';
 
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
   const { message, visible, showToast } = useToast();
   const activeSection = useActiveSection(['home', 'work', 'skills']);
+  useIntersection();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const openPalette = useCallback(() => setPaletteOpen(true), []);
@@ -37,6 +40,7 @@ export default function App() {
 
   return (
     <>
+      <LoadingScreen />
       <Header isDark={isDark} onToggleTheme={toggleTheme} onOpenPalette={openPalette} activeSection={activeSection} />
       <main className="page-shell">
         <Intro onCopyEmail={() => showToast('Email copied')} />

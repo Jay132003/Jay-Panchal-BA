@@ -1,3 +1,5 @@
+import { AnimatedThemeToggler } from './ui/animated-theme-toggler';
+
 type HeaderProps = {
   isDark: boolean;
   onToggleTheme: () => void;
@@ -30,14 +32,13 @@ export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSec
           <span>⌕</span>
           <kbd>⌘ K</kbd>
         </button>
-        <button
+        <AnimatedThemeToggler
           className="icon-button theme-toggle"
-          type="button"
-          aria-label="Toggle dark mode"
-          onClick={onToggleTheme}
-        >
-          {isDark ? '☀' : '☾'}
-        </button>
+          theme={isDark ? 'dark' : 'light'}
+          onThemeChange={onToggleTheme}
+          variant="circle"
+          duration={500}
+        />
       </div>
     </header>
     </div>
