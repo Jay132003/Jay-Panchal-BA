@@ -703,35 +703,16 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
 /* ── Responsive — mobile (≤ 660px) ─────────────────────────── */
 @media (max-width: 660px) {
-  /* Header — nav leaves flow (fixed bottom), so push actions to the right */
-  .site-header { height: 60px; justify-content: flex-end; }
+  /* Header — same layout as desktop, no pill, no border */
+  .site-header { height: 56px; }
   .site-header nav {
-    position: fixed;
-    left: 50%;
-    bottom: 14px;
-    z-index: 110;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    gap: 20px;
-    border: 1px solid var(--line);
-    border-radius: 99px;
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    animation: nav-pill-enter 500ms cubic-bezier(0.34, 1.4, 0.64, 1) 700ms both;
+    gap: 16px;
+    font-size: 13px;
   }
   .command-trigger { display: none; }
-  .site-header-wrapper {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
 
-  /* Hide scroll-to-top on mobile — bottom nav "Home" covers this */
-  .scroll-top-btn { display: none; }
-
-  /* Scroll anchors clear the sticky header */
-  .content-section { scroll-margin-top: 72px; }
+  /* Scroll anchors */
+  .content-section { scroll-margin-top: 68px; }
 
   /* Intro */
   .intro { align-items: flex-start; gap: 14px; }
@@ -739,7 +720,7 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   h1 { font-size: 21px; }
   .role { font-size: 14px; }
 
-  /* Experience — improve readability on small screens */
+  /* Experience */
   .experience-toggle { grid-template-columns: 1fr; gap: 4px; min-height: 56px; }
   .job-meta { text-align: left; }
   .experience-details { font-size: 14px; line-height: 1.65; padding: 0 4px 14px 14px; }
@@ -754,22 +735,16 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   .education-meta { text-align: left; }
 
   /* Footer */
-  footer { grid-template-columns: 1fr; gap: 16px; padding-bottom: 32px; }
+  footer { grid-template-columns: 1fr; gap: 16px; }
 
-  /* Quote clears floating nav pill */
-  blockquote { margin-bottom: 90px; padding: 24px 14px; }
-
-  /* Toast clears floating nav pill */
-  .toast { bottom: 72px; }
+  /* Quote */
+  blockquote { padding: 24px 14px; }
 
   /* Command palette */
   .palette-backdrop { padding-top: 8vh; }
 
   /* Touch-friendly social links */
   .social-links a { padding: 3px 0; }
-
-  /* Ensure last section has breathing room above the bottom pill */
-  .page-shell { padding-bottom: 80px; }
 }
 
 /* ── Responsive — small phones (≤ 400px) ───────────────────── */
