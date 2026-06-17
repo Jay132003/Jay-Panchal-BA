@@ -703,8 +703,8 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
 /* ── Responsive — mobile (≤ 660px) ─────────────────────────── */
 @media (max-width: 660px) {
-  /* Header */
-  .site-header { height: 60px; }
+  /* Header — nav leaves flow (fixed bottom), so push actions to the right */
+  .site-header { height: 60px; justify-content: flex-end; }
   .site-header nav {
     position: fixed;
     left: 50%;
@@ -727,6 +727,9 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
     -webkit-backdrop-filter: blur(10px);
   }
 
+  /* Hide scroll-to-top on mobile — bottom nav "Home" covers this */
+  .scroll-top-btn { display: none; }
+
   /* Scroll anchors clear the sticky header */
   .content-section { scroll-margin-top: 72px; }
 
@@ -736,9 +739,15 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   h1 { font-size: 21px; }
   .role { font-size: 14px; }
 
-  /* Experience */
+  /* Experience — improve readability on small screens */
   .experience-toggle { grid-template-columns: 1fr; gap: 4px; min-height: 56px; }
   .job-meta { text-align: left; }
+  .experience-details { font-size: 14px; line-height: 1.65; padding: 0 4px 14px 14px; }
+  .experience-details p { margin: 0 0 10px; }
+
+  /* Playlists heading badge scales down */
+  .spotify-heading-badge { width: 28px; height: 28px; }
+  .spotify-heading-badge svg { width: 14px; height: 14px; }
 
   /* Education */
   .education-row { flex-direction: column; gap: 4px; }
@@ -750,15 +759,17 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   /* Quote clears floating nav pill */
   blockquote { margin-bottom: 90px; padding: 24px 14px; }
 
-  /* Fixed elements clear floating nav pill */
-  .scroll-top-btn { bottom: 74px; right: 16px; }
-  .toast          { bottom: 72px; }
+  /* Toast clears floating nav pill */
+  .toast { bottom: 72px; }
 
   /* Command palette */
   .palette-backdrop { padding-top: 8vh; }
 
   /* Touch-friendly social links */
   .social-links a { padding: 3px 0; }
+
+  /* Ensure last section has breathing room above the bottom pill */
+  .page-shell { padding-bottom: 80px; }
 }
 
 /* ── Responsive — small phones (≤ 400px) ───────────────────── */
@@ -768,13 +779,13 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   .intro { gap: 12px; }
   .avatar { width: 60px; height: 60px; flex-basis: 60px; }
   h1 { font-size: 18px; }
-  h2 { font-size: 18px; }
+  h2 { font-size: 17px; }
   .impact-list article { grid-template-columns: 56px 1fr; gap: 10px; }
   .metric { font-size: 19px; }
-  nav { gap: 14px; font-size: 13px; }
+  nav { gap: 12px; font-size: 13px; }
   blockquote { font-size: 13px; }
   .header-actions { gap: 4px; }
-  .icon-button { width: 30px; height: 30px; }
+  .icon-button { width: 32px; height: 32px; }
 }
 
 /* ── Reduced motion ─────────────────────────────────────────── */
