@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 
 export default function LoadingScreen() {
-  const [phase, setPhase] = useState<'in' | 'hold' | 'out' | 'done'>('in');
+  const [exiting, setExiting] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('hold'), 80);
-    const t2 = setTimeout(() => setPhase('out'),  1000);
-    const t3 = setTimeout(() => setPhase('done'), 1420);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    // Remove static HTML splash — React loader (already at opacity 1) takes over instantly
+    const splash = document.getElementById('splash');
+    if (splash) splash.remove();
+
+    const t1 = setTimeout(() => setExiting(true), 950);
+    const t2 = setTimeout(() => setDone(true), 1350);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  if (phase === 'done') return null;
+  if (done) return null;
 
   return (
-    <div className={`loader ${phase}`} aria-hidden="true">
+    <div className={`loader${exiting ? ' loader--out' : ''}`} aria-hidden="true">
       <div className="loader-mark">JP</div>
       <div className="loader-dots">
         <span /><span /><span />

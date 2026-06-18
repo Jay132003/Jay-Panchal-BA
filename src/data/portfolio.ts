@@ -16,6 +16,8 @@ export const socialLinks = [
   { label: 'Phone', href: 'tel:+919624287628' },
 ] as const;
 
+const DEVICON = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons';
+
 export type ExperienceItem = {
   company: string;
   role: string;
@@ -23,6 +25,9 @@ export type ExperienceItem = {
   location: string;
   isCurrent?: boolean;
   details: string[];
+  website?: string;
+  linkedIn?: string;
+  technologies?: { name: string; icon: string }[];
 };
 
 export const experiences: ExperienceItem[] = [
@@ -32,6 +37,17 @@ export const experiences: ExperienceItem[] = [
     period: 'Jun 2024 – Present',
     location: 'Ahmedabad, India',
     isCurrent: true,
+    website: 'https://neome.ai',
+    linkedIn: 'https://www.linkedin.com/company/neome-ai/',
+    technologies: [
+      { name: 'Jira',       icon: `${DEVICON}/jira/jira-original.svg` },
+      { name: 'Figma',      icon: `${DEVICON}/figma/figma-original.svg` },
+      { name: 'Confluence', icon: `${DEVICON}/confluence/confluence-original.svg` },
+      { name: 'SQL',        icon: `${DEVICON}/mysql/mysql-original.svg` },
+      { name: 'Excel',      icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+      { name: 'Postman',    icon: `${DEVICON}/postman/postman-original.svg` },
+      { name: 'Git',        icon: `${DEVICON}/git/git-original.svg` },
+    ],
     details: [
       'Delivered 100+ enterprise automation modules — Leads, Visits, Quotations, Approvals, Dashboards, Data Management — used by 100+ users across multiple industries.',
       'Automated 70% of manual operations by designing validations, workflow rules, escalations, reminders and event-driven triggers, reducing turnaround times significantly.',
@@ -46,6 +62,12 @@ export const experiences: ExperienceItem[] = [
     role: 'Frontend Development Intern',
     period: 'Jan 2024 – Jul 2024',
     location: 'Ahmedabad, India',
+    technologies: [
+      { name: 'Android', icon: `${DEVICON}/android/android-original.svg` },
+      { name: 'MySQL',   icon: `${DEVICON}/mysql/mysql-original.svg` },
+      { name: 'HTML5',   icon: `${DEVICON}/html5/html5-original.svg` },
+      { name: 'Git',     icon: `${DEVICON}/git/git-original.svg` },
+    ],
     details: [
       'Built foundational skills in Android development, REST API integration, MySQLite and client-server workflow design.',
       'Strengthened technical depth to support engineering collaboration in automation and process optimization projects.',
@@ -56,6 +78,11 @@ export const experiences: ExperienceItem[] = [
     role: 'Development & Testing Trainee',
     period: 'Jul 2023 – Aug 2023',
     location: 'Ahmedabad, India',
+    technologies: [
+      { name: 'Python', icon: `${DEVICON}/python/python-original.svg` },
+      { name: 'SQL',    icon: `${DEVICON}/mysql/mysql-original.svg` },
+      { name: 'HTML5',  icon: `${DEVICON}/html5/html5-original.svg` },
+    ],
     details: [
       'Trained in Python, SQL, Web Development and Manual Testing through an intensive software engineering program.',
       'Developed mini-projects involving data handling, API usage and backend logic implementation.',
@@ -63,6 +90,19 @@ export const experiences: ExperienceItem[] = [
     ],
   },
 ];
+
+export const techStack = [
+  { name: 'Jira',       icon: `${DEVICON}/jira/jira-original.svg` },
+  { name: 'Figma',      icon: `${DEVICON}/figma/figma-original.svg` },
+  { name: 'Git',        icon: `${DEVICON}/git/git-original.svg` },
+  { name: 'SQL',        icon: `${DEVICON}/mysql/mysql-original.svg` },
+  { name: 'Python',     icon: `${DEVICON}/python/python-original.svg` },
+  { name: 'Excel',      icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+  { name: 'Confluence', icon: `${DEVICON}/confluence/confluence-original.svg` },
+  { name: 'Android',    icon: `${DEVICON}/android/android-original.svg` },
+  { name: 'HTML5',      icon: `${DEVICON}/html5/html5-original.svg` },
+  { name: 'Postman',    icon: `${DEVICON}/postman/postman-original.svg` },
+] as const;
 
 export const impactItems = [
   {
