@@ -1,8 +1,15 @@
+import { motion } from 'motion/react';
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer>
+    <motion.footer
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div>
         <p>Navigate</p>
         <a href="#home">Home</a>
@@ -21,6 +28,6 @@ export default function Footer() {
         <a href="tel:+919624287628">Phone</a>
       </div>
       <small>© {year} Jay Panchal. All rights reserved.</small>
-    </footer>
+    </motion.footer>
   );
 }

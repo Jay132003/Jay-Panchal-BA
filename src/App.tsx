@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence } from 'motion/react';
 import Header from './components/Header';
 import Intro from './components/Intro';
 import Experience from './components/Experience';
@@ -15,14 +16,20 @@ import LoadingScreen from './components/LoadingScreen';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
-import { useIntersection } from './hooks/useIntersection';
 
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
   const { message, visible, showToast } = useToast();
   const activeSection = useActiveSection(['home', 'work', 'skills']);
-  useIntersection();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [loaderVisible, setLoaderVisible] = useState(true);
+
+  useEffect(() => {
+    const splash = document.getElementById('splash');
+    if (splash) splash.remove();
+    const t = setTimeout(() => setLoaderVisible(false), 1050);
+    return () => clearTimeout(t);
+  }, []);
 
   const openPalette = useCallback(() => setPaletteOpen(true), []);
   const closePalette = useCallback(() => setPaletteOpen(false), []);
@@ -34,14 +41,15 @@ export default function App() {
         setPaletteOpen((open) => !open);
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (
     <>
-      <LoadingScreen />
+      <AnimatePresence>
+        {loaderVisible && <LoadingScreen key="loader" />}
+      </AnimatePresence>
       <Header isDark={isDark} onToggleTheme={toggleTheme} onOpenPalette={openPalette} activeSection={activeSection} />
       <main className="page-shell">
         <Intro onCopyEmail={() => showToast('Email copied')} />

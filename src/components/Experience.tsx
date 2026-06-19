@@ -1,5 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { experiences } from '../data/portfolio';
+
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Experience() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -22,8 +25,23 @@ export default function Experience() {
 
   return (
     <section id="work" className="content-section">
-      <p className="exp-label">Work</p>
-      <h2>A record of measurable outcomes.</h2>
+      <motion.p
+        className="exp-label"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.4, ease }}
+      >
+        Work
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.5, delay: 0.06, ease }}
+      >
+        A record of measurable outcomes.
+      </motion.h2>
 
       <div className="tl-root" ref={rootRef}>
         <div className="tl-track" aria-hidden="true">
@@ -31,17 +49,19 @@ export default function Experience() {
         </div>
 
         {experiences.map((job, i) => (
-          <div
+          <motion.div
             key={job.company}
             className={`tl-entry${job.isCurrent ? ' tl-entry--active' : ''}`}
-            style={{ '--tl-i': i } as React.CSSProperties}
+            initial={{ opacity: 0, y: 22, filter: 'blur(4px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ delay: i * 0.13, duration: 0.55, ease }}
           >
             <span className="tl-node" aria-hidden="true">
               <span className="tl-node-core" />
             </span>
 
             <div className="tl-body">
-              {/* ── Header: logo + company info ←→ period + location ── */}
               <div className="tl-entry-header">
                 <div className="tl-entry-left">
                   <div className="tl-logo-box">
@@ -85,7 +105,6 @@ export default function Experience() {
                 </div>
               </div>
 
-              {/* ── Technologies & Tools ── */}
               {job.technologies && job.technologies.length > 0 && (
                 <div className="tl-tech">
                   <p className="tl-tech-label">Technologies & Tools</p>
@@ -110,7 +129,6 @@ export default function Experience() {
                 </div>
               )}
 
-              {/* ── Bullet points ── */}
               <ul className="tl-bullets">
                 {job.details.map((d) => (
                   <li key={d}>
@@ -120,36 +138,26 @@ export default function Experience() {
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
   );
 }
 
-/* ── Company logos ───────────────────────────────────────────── */
-
 const LOGOS: Record<string, string> = {
-  'Neome.ai':                   '/assets/Neome logo.png',
+  'Neome.ai':                     '/assets/Neome logo.png',
   'Brainybeam Info-Tech Pvt Ltd': '/assets/Brainybeam logo.jpeg',
-  'QSpiders':                   '/assets/Qspiders logo.png',
+  'QSpiders':                     '/assets/Qspiders logo.png',
 };
 
 function CompanyLogo({ company }: { company: string }) {
   const src = LOGOS[company];
   if (!src) return null;
   return (
-    <img
-      src={src}
-      alt={company}
-      width="46"
-      height="46"
-      className="tl-logo-img"
-    />
+    <img src={src} alt={company} width="46" height="46" className="tl-logo-img" />
   );
 }
-
-/* ── Small icon helpers ──────────────────────────────────────── */
 
 function GlobeIcon() {
   return (
@@ -173,13 +181,7 @@ function CheckIcon() {
   return (
     <svg className="tl-check-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="7" stroke="currentColor" strokeOpacity=".2" />
-      <path
-        d="M5 8.5l2.25 2.25L11 5.5"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M5 8.5l2.25 2.25L11 5.5" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

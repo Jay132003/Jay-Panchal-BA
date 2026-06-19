@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import { AnimatedThemeToggler } from './ui/animated-theme-toggler';
 
 type HeaderProps = {
@@ -9,7 +10,12 @@ type HeaderProps = {
 
 export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSection }: HeaderProps) {
   return (
-    <div className="site-header-wrapper">
+    <motion.div
+      className="site-header-wrapper"
+      initial={{ opacity: 0, y: -14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, delay: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
+    >
       <header className="site-header">
         <nav aria-label="Primary navigation">
           <a href="#home" className={activeSection === 'home' ? 'nav-active' : ''}>Home</a>
@@ -38,6 +44,6 @@ export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSec
           />
         </div>
       </header>
-    </div>
+    </motion.div>
   );
 }

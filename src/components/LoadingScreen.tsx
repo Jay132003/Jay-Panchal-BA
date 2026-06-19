@@ -1,27 +1,30 @@
-import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 
 export default function LoadingScreen() {
-  const [exiting, setExiting] = useState(false);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    // Remove static HTML splash — React loader (already at opacity 1) takes over instantly
-    const splash = document.getElementById('splash');
-    if (splash) splash.remove();
-
-    const t1 = setTimeout(() => setExiting(true), 950);
-    const t2 = setTimeout(() => setDone(true), 1350);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
-
-  if (done) return null;
-
   return (
-    <div className={`loader${exiting ? ' loader--out' : ''}`} aria-hidden="true">
-      <div className="loader-mark">JP</div>
-      <div className="loader-dots">
+    <motion.div
+      className="loader"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.06, filter: 'blur(14px)' }}
+      transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+      aria-hidden="true"
+    >
+      <motion.div
+        className="loader-mark"
+        initial={{ opacity: 0, scale: 0.8, filter: 'blur(8px)' }}
+        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.55, ease: [0.34, 1.4, 0.64, 1] }}
+      >
+        JP
+      </motion.div>
+      <motion.div
+        className="loader-dots"
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.4, ease: 'easeOut' }}
+      >
         <span /><span /><span />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
