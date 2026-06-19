@@ -1,3 +1,13 @@
+/* ── Spinning text orbit (uses CSS @property for smooth angle animation) ── */
+@property --orbit-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes spin-orbit {
+  to { --orbit-angle: 360deg; }
+}
+
 /* ── Design tokens ──────────────────────────────────────────── */
 :root {
   color-scheme: light;
@@ -111,12 +121,13 @@ kbd {
 .page-shell { width: min(100% - 40px, 640px); margin: 17px auto 0; }
 .intro { display: flex; align-items: center; gap: 17px; }
 /* Outer ring holds both the avatar circle and the SpinningText.
-   Size = avatar diameter + orbit gap on each side (~28px each). */
+   --spin-radius controls the orbit distance (set per-breakpoint below). */
 .avatar-ring {
   position: relative;
-  flex: 0 0 152px;
-  width: 152px;
-  height: 152px;
+  flex: 0 0 140px;
+  width: 140px;
+  height: 140px;
+  --spin-radius: 56px;
 }
 .avatar {
   position: absolute;
@@ -139,6 +150,9 @@ kbd {
 }
 h1 { margin: 0; font-size: 24px; line-height: 1.25; letter-spacing: -.025em; font-family: "Lora", Georgia, serif; }
 .role { margin: 2px 0 0; color: var(--muted); overflow-wrap: break-word; word-break: break-word; }
+/* Desktop: single-line role visible, 3-line hidden */
+.intro-meta { display: none; }
+.role-line { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
 .copy-email { border: 0; padding: 0; background: none; color: var(--muted); cursor: pointer; }
 .copy-email:hover { color: var(--text); }
 .bio { margin: 18px 0 13px; color: var(--muted); }
@@ -932,12 +946,16 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   /* Space between header and first section */
   .page-shell { margin-top: 28px; }
 
-  /* Intro */
-  .intro { align-items: flex-start; gap: 14px; }
-  .avatar-ring { flex: 0 0 124px; width: 124px; height: 124px; }
-  .avatar { width: 72px; height: 72px; }
-  h1 { font-size: 21px; }
-  .role { font-size: 14px; }
+  /* Intro — horizontal: avatar left, 3-line text right */
+  .intro { flex-direction: row; align-items: flex-start; gap: 12px; }
+  .role { display: none; }
+  .intro-meta { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; }
+  .role-line { font-size: 13px; }
+  .copy-email { font-size: 13px; }
+  /* Avatar ring — compact for side-by-side, nudged gently upward */
+  .avatar-ring { flex: 0 0 112px; width: 112px; height: 112px; --spin-radius: 43px; margin-top: -6px; }
+  .avatar { width: 76px; height: 76px; }
+  h1 { font-size: 20px; }
 
   /* Experience Timeline */
   .tl-root { padding-left: 34px; }
@@ -982,9 +1000,11 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 @media (max-width: 400px) {
   body { font-size: 14px; }
   .page-shell { width: calc(100% - 28px); }
-  .intro { gap: 12px; }
-  .avatar-ring { flex: 0 0 106px; width: 106px; height: 106px; }
-  .avatar { width: 60px; height: 60px; }
+  .intro { flex-direction: row; align-items: flex-start; gap: 9px; }
+  .avatar-ring { flex: 0 0 100px; width: 100px; height: 100px; --spin-radius: 38px; }
+  .avatar { width: 66px; height: 66px; }
+  .role-line { font-size: 12px; }
+  .copy-email { font-size: 12px; }
   h1 { font-size: 18px; }
   h2 { font-size: 17px; }
   .impact-list article { grid-template-columns: 56px 1fr; gap: 10px; }

@@ -36,6 +36,7 @@ export default function Intro({ onCopyEmail }: IntroProps) {
   };
 
   const nameWords = profile.name.split(' ');
+  const roleTitles = profile.role.split(' · ');
 
   return (
     <>
@@ -52,10 +53,10 @@ export default function Intro({ onCopyEmail }: IntroProps) {
             <img src="/assets/avatar.png" alt={profile.name} />
           </div>
           <SpinningText
-            radius={9}
-            fontSize={0.72}
+            radius={6}
+            fontSize={0.62}
             duration={14}
-            style={{ color: 'var(--muted)', fontWeight: 500, letterSpacing: '0.04em' }}
+            style={{ color: 'var(--muted)', fontWeight: 500, letterSpacing: '0.02em' }}
           >
             {`think • build • automate • `}
           </SpinningText>
@@ -81,6 +82,7 @@ export default function Intro({ onCopyEmail }: IntroProps) {
             ))}
           </h1>
 
+          {/* Desktop: single line */}
           <motion.p
             className="role"
             initial={{ opacity: 0, y: 8 }}
@@ -96,6 +98,25 @@ export default function Intro({ onCopyEmail }: IntroProps) {
               </svg>
             </button>
           </motion.p>
+
+          {/* Mobile: 3 separate lines */}
+          <motion.div
+            className="intro-meta"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: BASE + 0.32, ease }}
+          >
+            {roleTitles.map((title) => (
+              <p key={title} className="role-line">{title}</p>
+            ))}
+            <button className="copy-email" type="button" onClick={handleCopyEmail}>
+              {profile.email}{' '}
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline', verticalAlign: 'middle', marginBottom: '1px' }}>
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+            </button>
+          </motion.div>
         </div>
       </section>
 
