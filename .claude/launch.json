@@ -5,7 +5,7 @@
       "name": "jay-portfolio",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "port": 5174
     }
   ]
 }

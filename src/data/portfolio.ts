@@ -207,6 +207,7 @@ export const commands: CommandItem[] = [
   { label: 'Home', shortcut: 'H', target: '#home' },
   { label: 'Experience', shortcut: 'W', target: '#work' },
   { label: 'Capabilities', shortcut: 'S', target: '#skills' },
+  { label: 'About', shortcut: 'A', target: '#about' },
   { label: 'Open resume', shortcut: 'R', href: '/assets/jay-panchal-resume.pdf' },
   { label: 'Send an email', shortcut: 'E', href: 'mailto:panchalj481@gmail.com' },
 ];

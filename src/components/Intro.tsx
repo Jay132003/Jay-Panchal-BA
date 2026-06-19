@@ -17,15 +17,18 @@ const SOCIAL_ICONS: Record<string, TablerIcon> = {
   Phone:    IconPhone,
 };
 
-// Hero elements start appearing as the loading screen exits (~1.05s)
-const BASE = 1.05;
 const ease = [0.25, 0.46, 0.45, 0.94] as const;
 
 type IntroProps = {
   onCopyEmail: (email: string) => void;
+  // true after loader exits; false on first render so delays sync with splash screen
+  animReady?: boolean;
 };
 
-export default function Intro({ onCopyEmail }: IntroProps) {
+export default function Intro({ onCopyEmail, animReady }: IntroProps) {
+  // On initial load: wait 1.05s (loader duration) before hero appears.
+  // On navigate-back: no loader, so start immediately.
+  const BASE = animReady ? 0 : 1.05;
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(profile.email);

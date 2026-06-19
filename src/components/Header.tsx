@@ -6,9 +6,16 @@ type HeaderProps = {
   onToggleTheme: () => void;
   onOpenPalette: () => void;
   activeSection?: string;
+  currentPage?: 'home' | 'about';
 };
 
-export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSection }: HeaderProps) {
+export default function Header({
+  isDark,
+  onToggleTheme,
+  onOpenPalette,
+  activeSection,
+  currentPage = 'home',
+}: HeaderProps) {
   return (
     <motion.div
       className="site-header-wrapper"
@@ -18,9 +25,10 @@ export default function Header({ isDark, onToggleTheme, onOpenPalette, activeSec
     >
       <header className="site-header">
         <nav aria-label="Primary navigation">
-          <a href="#home" className={activeSection === 'home' ? 'nav-active' : ''}>Home</a>
-          <a href="#work" className={activeSection === 'work' ? 'nav-active' : ''}>Work</a>
-          <a href="#skills" className={activeSection === 'skills' ? 'nav-active' : ''}>Skills</a>
+          <a href="#home" className={currentPage === 'home' && activeSection === 'home' ? 'nav-active' : ''}>Home</a>
+          <a href="#work" className={currentPage === 'home' && activeSection === 'work' ? 'nav-active' : ''}>Work</a>
+          <a href="#skills" className={currentPage === 'home' && activeSection === 'skills' ? 'nav-active' : ''}>Skills</a>
+          <a href="#about" className={currentPage === 'about' ? 'nav-active' : ''}>About</a>
           <a href="/assets/jay-panchal-resume.pdf" target="_blank" rel="noreferrer">Resume</a>
         </nav>
         <div className="header-actions">

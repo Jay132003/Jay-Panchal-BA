@@ -10,7 +10,12 @@ function runCommand(command: CommandItem, onClose: () => void) {
   onClose();
 
   if (command.target) {
-    document.querySelector(command.target)?.scrollIntoView({ behavior: 'smooth' });
+    const hash = command.target.replace('#', '');
+    window.location.hash = hash;
+    // If element exists in current page, scroll to it
+    setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   }
 
   if (command.href) {

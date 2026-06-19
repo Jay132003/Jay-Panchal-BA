@@ -15,6 +15,7 @@ export default function Footer() {
         <a href="#home">Home</a>
         <a href="#work">Work</a>
         <a href="#skills">Skills</a>
+        <a href="#about">About</a>
         <a href="/assets/jay-panchal-resume.pdf" target="_blank" rel="noreferrer">
           Resume
         </a>
