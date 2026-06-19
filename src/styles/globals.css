@@ -110,10 +110,21 @@ kbd {
 /* ── Page shell & intro ─────────────────────────────────────── */
 .page-shell { width: min(100% - 40px, 640px); margin: 17px auto 0; }
 .intro { display: flex; align-items: center; gap: 17px; }
+/* Outer ring holds both the avatar circle and the SpinningText.
+   Size = avatar diameter + orbit gap on each side (~28px each). */
+.avatar-ring {
+  position: relative;
+  flex: 0 0 152px;
+  width: 152px;
+  height: 152px;
+}
 .avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 96px;
   height: 96px;
-  flex: 0 0 96px;
   border-radius: 50%;
   overflow: hidden;
   background: var(--accent);
@@ -467,7 +478,9 @@ h3 { margin: 0; font-size: 16px; line-height: 1.35; font-family: "Lora", Georgia
 .skill-card-inner {
   position: relative;
   z-index: 2;
-  padding: 20px 18px 18px;
+  padding: 22px 20px 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .skill-card:hover {
@@ -481,14 +494,57 @@ h3 { margin: 0; font-size: 16px; line-height: 1.35; font-family: "Lora", Georgia
   to   { transform: rotate(360deg); }
 }
 
+/* ── Skill card internals ────────────────────────────────────── */
+.sk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.sk-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sk-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--soft);
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  letter-spacing: 0.03em;
+}
+.sk-count::before { content: '×'; margin-right: 3px; opacity: 0.5; }
+
+.skill-card-inner h3 { margin: 0 0 6px; }
+
+.sk-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.sk-rule {
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  margin: 14px 0 12px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
 /* Skill tag chips */
 .skill-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 12px;
 }
-
 .skill-tag {
   font-size: 12px;
   line-height: 1;
@@ -500,11 +556,11 @@ h3 { margin: 0; font-size: 16px; line-height: 1.35; font-family: "Lora", Georgia
   transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
   cursor: default;
 }
-
-.skill-tag:hover {
-  border-color: var(--accent);
+/* Per-card accent colour on tag hover */
+.skill-card .skill-tag:hover {
+  border-color: var(--sk-accent);
   color: var(--text);
-  background: color-mix(in srgb, var(--accent) 10%, var(--soft));
+  background: var(--sk-accent-bg);
 }
 
 /* ── Playlists / Marquee ────────────────────────────────────── */
@@ -670,17 +726,33 @@ h3 { margin: 0; font-size: 16px; line-height: 1.35; font-family: "Lora", Georgia
 .education-meta small { display: block; }
 
 /* ── Quote ──────────────────────────────────────────────────── */
-blockquote {
-  margin: 64px 0 78px;
-  padding: 34px 18px;
+.quote-wrapper { margin: 64px 0 78px; }
+.quote-card {
   border: 1px solid var(--line);
   border-radius: 10px;
-  color: var(--muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-style: italic;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,.02);
 }
-blockquote cite { display: block; margin-top: 12px; text-align: right; font-size: 13px; }
+blockquote {
+  padding: 36px 28px;
+  margin: 0;
+  color: var(--text);
+  font-family: inherit;
+  font-style: normal;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+}
+blockquote cite {
+  display: block;
+  margin-top: 18px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
+}
 
 /* ── Footer ─────────────────────────────────────────────────── */
 footer {
@@ -862,7 +934,8 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 
   /* Intro */
   .intro { align-items: flex-start; gap: 14px; }
-  .avatar { width: 72px; height: 72px; flex-basis: 72px; }
+  .avatar-ring { flex: 0 0 124px; width: 124px; height: 124px; }
+  .avatar { width: 72px; height: 72px; }
   h1 { font-size: 21px; }
   .role { font-size: 14px; }
 
@@ -890,7 +963,8 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   footer { grid-template-columns: 1fr; gap: 16px; }
 
   /* Quote clears the nav pill */
-  blockquote { margin-bottom: 24px; padding: 24px 14px; }
+  .quote-wrapper { margin-bottom: 24px; }
+  blockquote { padding: 24px 16px; font-size: 20px; }
 
   /* Command palette */
   .palette-backdrop { padding-top: 8vh; }
@@ -909,13 +983,14 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
   body { font-size: 14px; }
   .page-shell { width: calc(100% - 28px); }
   .intro { gap: 12px; }
-  .avatar { width: 60px; height: 60px; flex-basis: 60px; }
+  .avatar-ring { flex: 0 0 106px; width: 106px; height: 106px; }
+  .avatar { width: 60px; height: 60px; }
   h1 { font-size: 18px; }
   h2 { font-size: 17px; }
   .impact-list article { grid-template-columns: 56px 1fr; gap: 10px; }
   .metric { font-size: 19px; }
   nav { gap: 12px; font-size: 13px; }
-  blockquote { font-size: 13px; }
+  blockquote { font-size: 18px; }
   .header-actions { gap: 4px; }
   .icon-button { width: 32px; height: 32px; }
 }

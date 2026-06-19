@@ -6,13 +6,22 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function Impact() {
   return (
     <section className="content-section">
+      <motion.p
+        className="exp-label"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.4, ease }}
+      >
+        Impact
+      </motion.p>
       <motion.h2
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.5, ease }}
+        transition={{ duration: 0.5, delay: 0.06, ease }}
       >
-        Selected Impact
+        Numbers that speak for themselves.
       </motion.h2>
       <div className="impact-list">
         {impactItems.map((item, i) => (

@@ -6,6 +6,7 @@ import {
   IconPhone,
 } from '@tabler/icons-react';
 import { profile, socialLinks } from '../data/portfolio';
+import { SpinningText } from './core/spinning-text';
 
 type TablerIcon = React.ComponentType<{ size?: number; stroke?: number }>;
 
@@ -39,15 +40,25 @@ export default function Intro({ onCopyEmail }: IntroProps) {
   return (
     <>
       <section id="home" className="intro" aria-labelledby="intro-title">
-        {/* Avatar */}
+        {/* Avatar + spinning ring */}
         <motion.div
-          className="avatar"
+          className="avatar-ring"
           aria-hidden="true"
           initial={{ opacity: 0, scale: 0.84, filter: 'blur(10px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           transition={{ duration: 0.65, delay: BASE, ease: [0.34, 1.4, 0.64, 1] }}
         >
-          <img src="/assets/avatar.png" alt={profile.name} />
+          <div className="avatar">
+            <img src="/assets/avatar.png" alt={profile.name} />
+          </div>
+          <SpinningText
+            radius={9}
+            fontSize={0.72}
+            duration={14}
+            style={{ color: 'var(--muted)', fontWeight: 500, letterSpacing: '0.04em' }}
+          >
+            {`think • build • automate • `}
+          </SpinningText>
         </motion.div>
 
         {/* Name + role */}

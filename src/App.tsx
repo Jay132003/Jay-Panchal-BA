@@ -6,7 +6,7 @@ import Experience from './components/Experience';
 import Impact from './components/Impact';
 import Capabilities from './components/Capabilities';
 import Education from './components/Education';
-import Playlists from './components/Playlists';
+// import Playlists from './components/Playlists'; — reserved for About page
 import Quote from './components/Quote';
 import Footer from './components/Footer';
 import CommandPalette from './components/CommandPalette';
@@ -57,7 +57,7 @@ export default function App() {
         <Impact />
         <Capabilities />
         <Education />
-        <Playlists />
+        {/* <Playlists /> — reserved for About page */}
         <Quote />
       </main>
       <Footer />
