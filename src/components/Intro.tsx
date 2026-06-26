@@ -53,7 +53,7 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
           transition={{ duration: 0.65, delay: BASE, ease: [0.34, 1.4, 0.64, 1] }}
         >
           <div className="avatar">
-            <img src="/assets/avatar.png" alt={profile.name} />
+            <img src="/assets/Jay-New-Icon.jpg" alt={profile.name} />
           </div>
           <SpinningText
             radius={6}

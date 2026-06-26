@@ -23,7 +23,7 @@ export default function Footer() {
       <div>
         <p>Connect</p>
         <a href="mailto:panchalj481@gmail.com">Email</a>
-        <a href="https://linkedin.com/in/PanchalJay" target="_blank" rel="noreferrer">
+        <a href="https://www.linkedin.com/in/jjp01/" target="_blank" rel="noreferrer">
           LinkedIn
         </a>
         <a href="tel:+919624287628">Phone</a>
