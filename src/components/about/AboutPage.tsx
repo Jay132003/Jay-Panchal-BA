@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import Quote from '../Quote';
 import Footer from '../Footer';
+import AvatarPreview from '../AvatarPreview';
+
+const ABOUT_PHOTO = '/assets/Jay%20-%20About.jpg';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -14,6 +18,8 @@ const secV = {
 } as const;
 
 export function AboutPage() {
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   return (
     <>
       <motion.main
@@ -29,11 +35,18 @@ export function AboutPage() {
         <motion.section className="ab-intro content-section" variants={secV}>
           <div className="ab-intro-wrap">
             <div className="ab-photo-col">
-              <img
-                src="/assets/Jay%20-%20About.jpg"
-                alt="Jay Panchal"
-                className="ab-portrait"
-              />
+              <button
+                type="button"
+                className="ab-portrait-btn"
+                onClick={() => setPreviewOpen(true)}
+                aria-label="View photo of Jay Panchal"
+              >
+                <img
+                  src={ABOUT_PHOTO}
+                  alt="Jay Panchal"
+                  className="ab-portrait"
+                />
+              </button>
             </div>
 
             <div className="ab-info-col">
@@ -158,6 +171,13 @@ export function AboutPage() {
       </motion.main>
 
       <Footer />
+
+      <AvatarPreview
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        src={ABOUT_PHOTO}
+        alt="Jay Panchal"
+      />
     </>
   );
 }

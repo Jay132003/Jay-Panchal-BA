@@ -6,7 +6,7 @@ type HeaderProps = {
   onToggleTheme: () => void;
   onOpenPalette: () => void;
   activeSection?: string;
-  currentPage?: 'home' | 'about';
+  currentPage?: 'home' | 'about' | 'work';
 };
 
 export default function Header({
@@ -26,9 +26,9 @@ export default function Header({
       <header className="site-header">
         <nav aria-label="Primary navigation">
           <a href="#home" className={currentPage === 'home' && activeSection === 'home' ? 'nav-active' : ''}>Home</a>
-          <a href="#work" className={currentPage === 'home' && activeSection === 'work' ? 'nav-active' : ''}>Work</a>
+          <a href="#work" className={currentPage === 'work' || (currentPage === 'home' && activeSection === 'work') ? 'nav-active' : ''}>Work</a>
           <a href="#skills" className={currentPage === 'home' && activeSection === 'skills' ? 'nav-active' : ''}>Skills</a>
-          <a href="#about" className={currentPage === 'about' ? 'nav-active' : ''}>About</a>
+          <a href="#about" className={currentPage === 'about' || (currentPage === 'home' && activeSection === 'about-teaser') ? 'nav-active' : ''}>About</a>
           <a href="/assets/jay-panchal-resume.pdf" target="_blank" rel="noreferrer">Resume</a>
         </nav>
         <div className="header-actions">

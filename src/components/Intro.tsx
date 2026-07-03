@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   IconBrandLinkedin,
@@ -7,6 +8,10 @@ import {
 } from '@tabler/icons-react';
 import { profile, socialLinks } from '../data/portfolio';
 import { SpinningText } from './core/spinning-text';
+import NowPlaying from './NowPlaying';
+import AvatarPreview from './AvatarPreview';
+
+const AVATAR_SRC = '/assets/Jay_New.png';
 
 type TablerIcon = React.ComponentType<{ size?: number; stroke?: number }>;
 
@@ -38,6 +43,7 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
     }
   };
 
+  const [previewOpen, setPreviewOpen] = useState(false);
   const nameWords = profile.name.split(' ');
   const roleTitles = profile.role.split(' · ');
 
@@ -47,19 +53,23 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
         {/* Avatar + spinning ring */}
         <motion.div
           className="avatar-ring"
-          aria-hidden="true"
           initial={{ opacity: 0, scale: 0.84, filter: 'blur(10px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           transition={{ duration: 0.65, delay: BASE, ease: [0.34, 1.4, 0.64, 1] }}
         >
-          <div className="avatar">
-            <img src="/assets/Jay-New-Icon.jpg" alt={profile.name} />
-          </div>
+          <button
+            type="button"
+            className="avatar"
+            onClick={() => setPreviewOpen(true)}
+            aria-label={`View photo of ${profile.name}`}
+          >
+            <img src={AVATAR_SRC} alt="" />
+          </button>
           <SpinningText
             radius={6}
             fontSize={0.62}
             duration={14}
-            style={{ color: 'var(--muted)', fontWeight: 500, letterSpacing: '0.02em' }}
+            style={{ color: 'var(--muted)', fontWeight: 500, letterSpacing: '0.02em', pointerEvents: 'none' }}
           >
             {`think • build • automate • `}
           </SpinningText>
@@ -144,13 +154,22 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
         {profile.status}
       </motion.div>
 
+      {/* Now playing — background music */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: BASE + 0.72, ease }}
+      >
+        <NowPlaying />
+      </motion.div>
+
       {/* Social links — stagger each link */}
       <motion.div
         className="social-links"
         aria-label="Social links"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: BASE + 0.76, ease }}
+        transition={{ duration: 0.45, delay: BASE + 0.84, ease }}
       >
         {socialLinks.map((link) => {
           const Icon = SOCIAL_ICONS[link.label];
@@ -168,6 +187,13 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
           );
         })}
       </motion.div>
+
+      <AvatarPreview
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        src={AVATAR_SRC}
+        alt={profile.name}
+      />
     </>
   );
 }

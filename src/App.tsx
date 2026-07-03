@@ -14,14 +14,19 @@ import Toast from './components/Toast';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
 import { AboutPage } from './components/about/AboutPage';
+import { WorkPage } from './components/WorkPage';
+import { MusicProvider } from './components/MusicProvider';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
 
-type Page = 'home' | 'about';
+type Page = 'home' | 'about' | 'work';
 
 function getPage(): Page {
-  return window.location.hash === '#about' ? 'about' : 'home';
+  const hash = window.location.hash;
+  if (hash === '#about') return 'about';
+  if (hash === '#work-page') return 'work';
+  return 'home';
 }
 
 const pageEase = [0.22, 1, 0.36, 1] as const;
@@ -46,7 +51,7 @@ export default function App() {
   const [page, setPage] = useState<Page>(getPage);
   // Increment to force a full remount + re-stagger every time home is entered
   const [homeKey, setHomeKey] = useState(0);
-  const activeSection = useActiveSection(['home', 'work', 'skills'], homeKey);
+  const activeSection = useActiveSection(['home', 'work', 'skills', 'about-teaser'], homeKey);
 
   useEffect(() => {
     const splash = document.getElementById('splash');
@@ -62,13 +67,36 @@ export default function App() {
     const onChange = (e: HashChangeEvent) => {
       const next = getPage();
       const oldHash = new URL(e.oldURL).hash;
+      const targetId = window.location.hash.replace('#', '');
       setPage(next);
-      if (next === 'about' || oldHash === '#about') {
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      }
+      const leftSubpage = oldHash === '#about' || oldHash === '#work-page';
+
       if (next === 'home') {
         // Force every section to remount and re-animate on every home visit
         setHomeKey(k => k + 1);
+
+        if (leftSubpage && targetId && targetId !== 'home') {
+          // Coming from a full sub-page (About/Work) and aiming at a specific
+          // section (e.g. clicking "Skills" while on the About page) — the
+          // target element doesn't exist until the page-switch animation
+          // finishes and the section remounts, so poll briefly for it instead
+          // of just landing at the top.
+          let attempts = 0;
+          const tryScroll = () => {
+            const el = document.getElementById(targetId);
+            if (el) {
+              el.scrollIntoView({ behavior: 'instant' });
+              return;
+            }
+            if (attempts++ < 20) window.setTimeout(tryScroll, 40);
+          };
+          window.setTimeout(tryScroll, 260);
+        } else {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+      } else {
+        // Navigating to a full sub-page (About/Work) — always start at the top.
+        window.scrollTo({ top: 0, behavior: 'instant' });
       }
     };
     window.addEventListener('hashchange', onChange);
@@ -95,7 +123,7 @@ export default function App() {
   const staggerDelay = sectionsReady && homeKey === 0 ? 0.35 : 0.42;
 
   return (
-    <>
+    <MusicProvider>
       <AnimatePresence>
         {loaderVisible && <LoadingScreen key="loader" />}
       </AnimatePresence>
@@ -148,6 +176,16 @@ export default function App() {
             </main>
             {sectionsReady && <Footer />}
           </motion.div>
+        ) : page === 'work' ? (
+          <motion.div
+            key="work"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: pageEase }}
+          >
+            <WorkPage />
+          </motion.div>
         ) : (
           <motion.div
             key="about"
@@ -164,6 +202,6 @@ export default function App() {
       <ScrollToTop />
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Toast message={message} visible={visible} />
-    </>
+    </MusicProvider>
   );
 }

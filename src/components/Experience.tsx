@@ -1,10 +1,16 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { experiences } from '../data/portfolio';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function Experience() {
+type ExperienceProps = {
+  /** When true (the dedicated Work page), every entry is fully expanded with
+   *  no per-card toggle and no "Explore my work" button. */
+  fullDetails?: boolean;
+};
+
+export default function Experience({ fullDetails = false }: ExperienceProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [fillPct, setFillPct] = useState(0);
 
@@ -49,86 +55,158 @@ export default function Experience() {
         </div>
 
         {experiences.map((job, i) => (
-          <motion.div
-            key={job.company}
-            className={`tl-entry${job.isCurrent ? ' tl-entry--active' : ''}`}
-            initial={{ opacity: 0, y: 22, filter: 'blur(4px)' }}
-            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ delay: i * 0.13, duration: 0.55, ease }}
+          <TimelineEntry key={job.company} job={job} index={i} fullDetails={fullDetails} />
+        ))}
+      </div>
+
+      {!fullDetails && (
+        <motion.div
+          className="work-explore"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.5, ease }}
+        >
+          <a
+            href="#work-page"
+            className="group/cta relative flex h-10 w-44 items-center justify-center overflow-hidden rounded-xl border text-[13px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-[var(--text)]"
+            style={{ background: 'var(--surface)', color: 'var(--text)', borderColor: 'var(--line)' }}
           >
-            <span className="tl-node" aria-hidden="true">
-              <span className="tl-node-core" />
+            <span className="transition-transform duration-500 group-hover/cta:translate-x-44">
+              Explore my work
             </span>
+            <span className="absolute inset-0 flex items-center justify-center -translate-x-44 transition-transform duration-500 group-hover/cta:translate-x-0 text-lg">
+              💼
+            </span>
+          </a>
+        </motion.div>
+      )}
+    </section>
+  );
+}
 
-            <div className="tl-body">
-              <div className="tl-entry-header">
-                <div className="tl-entry-left">
-                  <div className="tl-logo-box">
-                    <CompanyLogo company={job.company} />
-                  </div>
-                  <div className="tl-entry-info">
-                    <div className="tl-name-row">
-                      <h3 className="tl-company">{job.company}</h3>
-                      {job.website && (
-                        <a
-                          href={job.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="tl-icon-btn"
-                          aria-label={`${job.company} website`}
-                        >
-                          <GlobeIcon />
-                        </a>
-                      )}
-                      {job.linkedIn && (
-                        <a
-                          href={job.linkedIn}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="tl-icon-btn"
-                          aria-label={`${job.company} on LinkedIn`}
-                        >
-                          <LinkedInIcon />
-                        </a>
-                      )}
-                      {job.isCurrent && (
-                        <span className="working"><i />Working</span>
-                      )}
-                    </div>
-                    <span className="tl-role-text">{job.role}</span>
-                  </div>
-                </div>
-                <div className="tl-entry-dates">
-                  <span>{job.period}</span>
-                  <small>{job.location}</small>
-                </div>
+type TimelineEntryProps = {
+  job: (typeof experiences)[number];
+  index: number;
+  fullDetails: boolean;
+};
+
+function TimelineEntry({ job, index, fullDetails }: TimelineEntryProps) {
+  const [open, setOpen] = useState(false);
+  const expanded = fullDetails || open;
+
+  return (
+    <motion.div
+      className={`tl-entry${job.isCurrent ? ' tl-entry--active' : ''}`}
+      initial={{ opacity: 0, y: 22, filter: 'blur(4px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ delay: index * 0.13, duration: 0.55, ease }}
+    >
+      <span className="tl-node" aria-hidden="true">
+        <span className="tl-node-core" />
+      </span>
+
+      <div className="tl-body">
+        <div className="tl-entry-header">
+          <div className="tl-entry-left">
+            <div className="tl-logo-box">
+              <CompanyLogo company={job.company} />
+            </div>
+            <div className="tl-entry-info">
+              <div className="tl-name-row">
+                <h3 className="tl-company">{job.company}</h3>
+                {job.website && (
+                  <a
+                    href={job.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tl-icon-btn"
+                    aria-label={`${job.company} website`}
+                  >
+                    <GlobeIcon />
+                  </a>
+                )}
+                {job.linkedIn && (
+                  <a
+                    href={job.linkedIn}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tl-icon-btn"
+                    aria-label={`${job.company} on LinkedIn`}
+                  >
+                    <LinkedInIcon />
+                  </a>
+                )}
+                {job.isCurrent && (
+                  <span className="working"><i />Working</span>
+                )}
               </div>
+              <span className="tl-role-text">{job.role}</span>
+            </div>
+          </div>
+          <div className="tl-entry-dates">
+            <span>{job.period}</span>
+            <small>{job.location}</small>
+            {!fullDetails && (
+              <button
+                type="button"
+                className="tl-expand-icon"
+                onClick={() => setOpen((o) => !o)}
+                aria-expanded={open}
+                aria-label={open ? 'Hide details' : 'Show details'}
+              >
+                {open ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="m7 20 5-5 5 5" />
+                    <path d="m7 4 5 5 5-5" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="m7 15 5 5 5-5" />
+                    <path d="m7 9 5-5 5 5" />
+                  </svg>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
 
-              {job.technologies && job.technologies.length > 0 && (
-                <div className="tl-tech">
-                  <p className="tl-tech-label">Technologies & Tools</p>
-                  <div className="tl-chips">
-                    {job.technologies.map((tech) => (
-                      <span key={tech.name} className="tl-chip">
-                        <img
-                          src={tech.icon}
-                          alt=""
-                          aria-hidden="true"
-                          width="15"
-                          height="15"
-                          className="tl-chip-img"
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                        {tech.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+        {job.technologies && job.technologies.length > 0 && (
+          <div className="tl-tech">
+            <p className="tl-tech-label">Technologies &amp; Tools</p>
+            <div className="tl-chips">
+              {job.technologies.map((tech) => (
+                <span key={tech.name} className="tl-chip">
+                  <img
+                    src={tech.icon}
+                    alt=""
+                    aria-hidden="true"
+                    width="15"
+                    height="15"
+                    className="tl-chip-img"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  {tech.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div
+              key="details"
+              className="tl-details"
+              initial={fullDetails ? false : { height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.32, ease }}
+              style={{ overflow: 'hidden' }}
+            >
               <ul className="tl-bullets">
                 {job.details.map((d) => (
                   <li key={d}>
@@ -137,11 +215,11 @@ export default function Experience() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </section>
+    </motion.div>
   );
 }
 

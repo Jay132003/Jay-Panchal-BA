@@ -3,12 +3,9 @@ import { motion } from 'motion/react';
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function AboutTeaser() {
-  const navigate = () => {
-    window.location.hash = '#about';
-  };
-
   return (
     <motion.section
+      id="about-teaser"
       className="content-section about-teaser"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -40,28 +37,20 @@ export default function AboutTeaser() {
           the way their business already thinks.
         </p>
 
-        <button
-          type="button"
-          className="about-teaser-cta"
-          onClick={navigate}
-          aria-label="Read the full story about Jay Panchal"
-        >
-          Read the full story
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+        <div className="flex justify-center mt-2">
+          <a
+            href="#about"
+            className="group/cta relative flex h-10 w-44 items-center justify-center overflow-hidden rounded-xl border text-[13px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:border-[var(--text)]"
+            style={{ background: 'var(--surface)', color: 'var(--text)', borderColor: 'var(--line)' }}
           >
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </button>
+            <span className="transition-transform duration-500 group-hover/cta:translate-x-44">
+              Read the full story
+            </span>
+            <span className="absolute inset-0 flex items-center justify-center -translate-x-44 transition-transform duration-500 group-hover/cta:translate-x-0 text-lg">
+              📖
+            </span>
+          </a>
+        </div>
       </div>
     </motion.section>
   );
