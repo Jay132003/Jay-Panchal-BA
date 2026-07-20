@@ -975,45 +975,63 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* ── Page loader ────────────────────────────────────────────── */
-.loader {
+/* ── Words preloader (multilingual greetings + curtain reveal) ── */
+/* Theme-aware: the curtain uses the site's own bg/text so the reveal is
+   seamless in both light and dark. */
+.preloader {
   position: fixed;
-  inset: 0;
-  z-index: 300;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;          /* fill mobile viewport incl. browser chrome */
+  z-index: 900;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  padding: 0 24px;
   background: var(--bg);
   pointer-events: auto;
+  overflow: hidden;
+  will-change: transform;
 }
-.loader-mark {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  background: var(--text);
-  color: var(--bg);
-  border-radius: 13px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -.03em;
+.preloader-word {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-family: "Inter", system-ui, "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 7vw, 3.1rem);
+  line-height: 1;
+  letter-spacing: -.02em;
+  max-width: 100%;
 }
-.loader-dots { display: flex; gap: 5px; }
-.loader-dots span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--muted);
-  animation: dot-bounce 1s ease-in-out infinite;
+/* Each greeting cross-dissolves in place (fade + subtle zoom/blur). The
+   exiting word is popped to absolute-centre so it overlays the entering one. */
+.preloader-word-slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
-.loader-dots span:nth-child(2) { animation-delay: .13s; }
-.loader-dots span:nth-child(3) { animation-delay: .26s; }
-@keyframes dot-bounce {
-  0%, 60%, 100% { transform: translateY(0);    opacity: .35; }
-  30%           { transform: translateY(-7px); opacity: 1; }
+.preloader-word-text {
+  display: inline-block;
+  will-change: transform, opacity, filter;
 }
+/* The curved fill that peels away on exit — same colour as the curtain. */
+.preloader-curve {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 260px);
+}
+.preloader-curve path { fill: var(--bg); }
 
 /* ── Keyframes ──────────────────────────────────────────────── */
 @keyframes header-enter {
@@ -1145,7 +1163,7 @@ footer small { grid-column: 1 / -1; margin-top: 15px; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .loader-dots span { animation: none !important; opacity: .5; }
+  .preloader-word-text { animation: none !important; }
 }
 
 /* ── Utilities ──────────────────────────────────────────────── */

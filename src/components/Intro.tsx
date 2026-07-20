@@ -22,18 +22,22 @@ const SOCIAL_ICONS: Record<string, TablerIcon> = {
   Phone:    IconPhone,
 };
 
-const ease = [0.25, 0.46, 0.45, 0.94] as const;
+// Strong, smooth decelerate — snappy in, gentle settle. Reads as intentional.
+const ease = [0.16, 1, 0.3, 1] as const;
 
 type IntroProps = {
   onCopyEmail: (email: string) => void;
   // true after loader exits; false on first render so delays sync with splash screen
   animReady?: boolean;
+  // On first load, hold the hero cascade a beat so it plays as the curtain
+  // clears (not hidden behind it). 0 on navigate-back (no curtain).
+  revealDelay?: number;
 };
 
-export default function Intro({ onCopyEmail, animReady }: IntroProps) {
-  // On initial load: wait 1.05s (loader duration) before hero appears.
-  // On navigate-back: no loader, so start immediately.
-  const BASE = animReady ? 0 : 1.05;
+export default function Intro({ onCopyEmail, animReady, revealDelay = 0 }: IntroProps) {
+  // On initial load: wait for the loader before the hero cascade begins.
+  // On navigate-back: no loader, so start (near) immediately.
+  const BASE = animReady ? revealDelay : 1.05;
   const handleCopyEmail = async () => {
     try {
       await navigator.clipboard.writeText(profile.email);
@@ -53,9 +57,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
         {/* Avatar + spinning ring */}
         <motion.div
           className="avatar-ring"
-          initial={{ opacity: 0, scale: 0.84, filter: 'blur(10px)' }}
+          initial={{ opacity: 0, scale: 0.8, filter: 'blur(12px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          transition={{ duration: 0.65, delay: BASE, ease: [0.34, 1.4, 0.64, 1] }}
+          transition={{ duration: 0.85, delay: BASE, ease: [0.34, 1.35, 0.64, 1] }}
         >
           <button
             type="button"
@@ -81,12 +85,12 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
             {nameWords.map((word, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0, filter: 'blur(5px)', y: 12 }}
+                initial={{ opacity: 0, filter: 'blur(8px)', y: 24 }}
                 animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
                 transition={{
-                  duration: 0.45,
-                  delay: BASE + 0.08 + i * 0.1,
-                  ease: 'easeOut',
+                  duration: 0.7,
+                  delay: BASE + 0.15 + i * 0.1,
+                  ease,
                 }}
                 style={{ display: 'inline-block', marginRight: i < nameWords.length - 1 ? '0.28em' : 0 }}
               >
@@ -98,9 +102,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
           {/* Desktop: single line */}
           <motion.p
             className="role"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: BASE + 0.32, ease }}
+            transition={{ duration: 0.65, delay: BASE + 0.45, ease }}
           >
             {profile.role} ·{' '}
             <button className="copy-email" type="button" onClick={handleCopyEmail}>
@@ -115,9 +119,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
           {/* Mobile: 3 separate lines */}
           <motion.div
             className="intro-meta"
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: BASE + 0.32, ease }}
+            transition={{ duration: 0.65, delay: BASE + 0.45, ease }}
           >
             {roleTitles.map((title) => (
               <p key={title} className="role-line">{title}</p>
@@ -136,9 +140,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
       {/* Bio */}
       <motion.p
         className="bio"
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: BASE + 0.48, ease }}
+        transition={{ duration: 0.65, delay: BASE + 0.62, ease }}
       >
         {profile.bio}
       </motion.p>
@@ -146,9 +150,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
       {/* Status */}
       <motion.div
         className="status-line"
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: BASE + 0.62, ease }}
+        transition={{ duration: 0.6, delay: BASE + 0.78, ease }}
       >
         <span className="status-dot" />
         {profile.status}
@@ -156,9 +160,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
 
       {/* Now playing — background music */}
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: BASE + 0.72, ease }}
+        transition={{ duration: 0.6, delay: BASE + 0.9, ease }}
       >
         <NowPlaying />
       </motion.div>
@@ -167,9 +171,9 @@ export default function Intro({ onCopyEmail, animReady }: IntroProps) {
       <motion.div
         className="social-links"
         aria-label="Social links"
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, delay: BASE + 0.84, ease }}
+        transition={{ duration: 0.6, delay: BASE + 1.02, ease }}
       >
         {socialLinks.map((link) => {
           const Icon = SOCIAL_ICONS[link.label];

@@ -12,7 +12,7 @@ import Footer from './components/Footer';
 import CommandPalette from './components/CommandPalette';
 import Toast from './components/Toast';
 import ScrollToTop from './components/ScrollToTop';
-import LoadingScreen from './components/LoadingScreen';
+import Preloader, { PRELOADER_CYCLE_MS } from './components/Preloader';
 import { AboutPage } from './components/about/AboutPage';
 import { WorkPage } from './components/WorkPage';
 import { MusicProvider } from './components/MusicProvider';
@@ -56,10 +56,13 @@ export default function App() {
   useEffect(() => {
     const splash = document.getElementById('splash');
     if (splash) splash.remove();
+    // Hold the loader until the greetings finish cycling, then let
+    // AnimatePresence run the curtain's slide-up exit. Content mounts now so
+    // it's ready behind the curtain as it peels away.
     const t = setTimeout(() => {
       setLoaderVisible(false);
       setSectionsReady(true);
-    }, 1050);
+    }, PRELOADER_CYCLE_MS);
     return () => clearTimeout(t);
   }, []);
 
@@ -125,7 +128,7 @@ export default function App() {
   return (
     <MusicProvider>
       <AnimatePresence>
-        {loaderVisible && <LoadingScreen key="loader" />}
+        {loaderVisible && <Preloader key="loader" />}
       </AnimatePresence>
 
       <Header
@@ -145,9 +148,24 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: pageEase }}
           >
-            <main className="page-shell">
+            {/* Gentle depth-settle on the whole page as the curtain lifts; the
+                real character comes from the hero cascading in element-by-element
+                (see Intro), so this stays subtle and doesn't move as one block. */}
+            <motion.main
+              className="page-shell"
+              initial={{ opacity: 0, scale: 0.982 }}
+              animate={{
+                opacity: sectionsReady ? 1 : 0,
+                scale: sectionsReady ? 1 : 0.982,
+              }}
+              transition={{ duration: 0.9, ease: pageEase, delay: sectionsReady ? 0.1 : 0 }}
+            >
               {/* Intro always mounts first — it has its own animate (not whileInView) */}
-              <Intro onCopyEmail={() => showToast('Email copied')} animReady={sectionsReady} />
+              <Intro
+                onCopyEmail={() => showToast('Email copied')}
+                animReady={sectionsReady}
+                revealDelay={homeKey === 0 ? 0.4 : 0}
+              />
 
               {/* All other sections only mount after the loader exits */}
               {sectionsReady && (
@@ -173,7 +191,7 @@ export default function App() {
                   <motion.div variants={secV}><Quote /></motion.div>
                 </motion.div>
               )}
-            </main>
+            </motion.main>
             {sectionsReady && <Footer />}
           </motion.div>
         ) : page === 'work' ? (
