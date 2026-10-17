@@ -109,6 +109,57 @@ export const techStack = [
   { name: 'Postman',    icon: `${DEVICON}/postman/postman-original.svg` },
 ] as const;
 
+export type StackGroup = {
+  title: string;
+  items: { name: string; icon: string }[];
+};
+
+export const stackGroups: StackGroup[] = [
+  {
+    title: 'Analysis & Delivery',
+    items: [
+      { name: 'Jira',       icon: `${DEVICON}/jira/jira-original.svg` },
+      { name: 'Confluence', icon: `${DEVICON}/confluence/confluence-original.svg` },
+      { name: 'Notion',     icon: 'https://cdn.simpleicons.org/notion' },
+      { name: 'Excel',      icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+    ],
+  },
+  {
+    title: 'Design',
+    items: [
+      { name: 'Figma', icon: `${DEVICON}/figma/figma-original.svg` },
+    ],
+  },
+  {
+    title: 'Data & APIs',
+    items: [
+      { name: 'SQL',        icon: `${DEVICON}/mysql/mysql-original.svg` },
+      { name: 'Postman',    icon: `${DEVICON}/postman/postman-original.svg` },
+      { name: 'Python',     icon: `${DEVICON}/python/python-original.svg` },
+      { name: 'Salesforce', icon: `${DEVICON}/salesforce/salesforce-original.svg` },
+    ],
+  },
+  {
+    title: 'AI',
+    items: [
+      { name: 'OpenAI', icon: 'https://cdn.jsdelivr.net/npm/simple-icons/icons/openai.svg' },
+      { name: 'Claude', icon: 'https://cdn.simpleicons.org/claude' },
+    ],
+  },
+  {
+    title: 'Engineering',
+    items: [
+      { name: 'Git',     icon: `${DEVICON}/git/git-original.svg` },
+      { name: 'React',   icon: `${DEVICON}/react/react-original.svg` },
+      { name: 'Next.js', icon: `${DEVICON}/nextjs/nextjs-original.svg` },
+      { name: 'Android', icon: `${DEVICON}/android/android-original.svg` },
+      { name: 'HTML5',   icon: `${DEVICON}/html5/html5-original.svg` },
+    ],
+  },
+];
+
+export const whatIDo = ['Business Analysis', 'Workflow Automation', 'Solutions Engineering', 'AI Workflows'] as const;
+
 export const impactItems = [
   {
     metric: '100+',

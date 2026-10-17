@@ -1,0 +1,64 @@
+/* ═══════════════════════════════════════════════════════════════
+   Intro — "Three scripts" (`sc-*`). The name scrambles through ગુજરાતી →
+   हिन्दी → English at the centre, then lands on the page's own name.
+   ═══════════════════════════════════════════════════════════════ */
+.sc {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+.sc-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+.sc-stack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+.sc-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sc-idx { color: var(--text); font-variant-numeric: tabular-nums; }
+.sc-dash { color: var(--ds-gray-500); }
+.sc-script { min-width: 7ch; letter-spacing: .04em; text-transform: none; }
+/* Room for the centred name (it's positioned separately so it can land). */
+.sc-slot { width: 1px; height: clamp(60px, 8vw, 96px); }
+.sc-bar { display: flex; gap: 6px; }
+.sc-seg {
+  position: relative;
+  width: 44px;
+  height: 2px;
+  overflow: hidden;
+  background: var(--edge);
+}
+.sc-seg-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  transform-origin: left center;
+}
+
+.sc-name.bx-name {
+  position: fixed;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-geist);
+  white-space: nowrap;
+  color: var(--text);
+}
+.sc-badge { display: inline-flex; }

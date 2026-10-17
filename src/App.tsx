@@ -1,21 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import Header from './components/Header';
-import Intro from './components/Intro';
-import Experience from './components/Experience';
-import Impact from './components/Impact';
-import Capabilities from './components/Capabilities';
-import Education from './components/Education';
-import AboutTeaser from './components/AboutTeaser';
-import Quote from './components/Quote';
-import Footer from './components/Footer';
+import HomePage from './components/home/HomePage';
+import FloatingNav from './components/home/FloatingNav';
 import CommandPalette from './components/CommandPalette';
 import Toast from './components/Toast';
-import ScrollToTop from './components/ScrollToTop';
-import Preloader, { PRELOADER_CYCLE_MS } from './components/Preloader';
+import ScriptsIntro from './components/intro/ScriptsIntro';
 import { AboutPage } from './components/about/AboutPage';
 import { WorkPage } from './components/WorkPage';
-import { MusicProvider } from './components/MusicProvider';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
@@ -31,40 +23,40 @@ function getPage(): Page {
 
 const pageEase = [0.22, 1, 0.36, 1] as const;
 
-// Each section fades up when the stagger container reveals it
-const secV = {
-  hidden: { opacity: 0, y: 18 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
-  },
-} as const;
+/** The intro plays every time the landing page loads — first visit and every
+ *  refresh (Jay, Oct 17) — but not when a link opens a sub-page or section,
+ *  and never for people who've asked their system for reduced motion. */
+function shouldPlayIntro(): boolean {
+  const hash = window.location.hash;
+  if (hash && hash !== '#home') return false;
+  return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
 export default function App() {
   const { isDark, toggleTheme } = useTheme();
   const { message, visible, showToast } = useToast();
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [loaderVisible, setLoaderVisible] = useState(true);
-  // Sections only mount after loader so whileInView can't fire during the splash
+  // The old signature preloader is gone (Jay, Oct 17). Each load of the landing
+  // page opens with the "Three scripts" intro (Jay's pick of three tried), which
+  // lands the name on the grid and then lets the page in.
+  const [intro, setIntro] = useState(shouldPlayIntro);
   const [sectionsReady, setSectionsReady] = useState(false);
   const [page, setPage] = useState<Page>(getPage);
   // Increment to force a full remount + re-stagger every time home is entered
   const [homeKey, setHomeKey] = useState(0);
-  const activeSection = useActiveSection(['home', 'work', 'skills', 'about-teaser'], homeKey);
+  const activeSection = useActiveSection(['home', 'about-teaser', 'work', 'skills'], homeKey);
 
   useEffect(() => {
     const splash = document.getElementById('splash');
     if (splash) splash.remove();
-    // Hold the loader until the greetings finish cycling, then let
-    // AnimatePresence run the curtain's slide-up exit. Content mounts now so
-    // it's ready behind the curtain as it peels away.
-    const t = setTimeout(() => {
-      setLoaderVisible(false);
-      setSectionsReady(true);
-    }, PRELOADER_CYCLE_MS);
-    return () => clearTimeout(t);
-  }, []);
+    if (intro) return; // the intro calls onReveal when it's time
+    // A timer, not rAF: rAF is paused in background tabs, which left the page blank.
+    const t = window.setTimeout(() => setSectionsReady(true), 0);
+    return () => window.clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const revealFromIntro = useCallback(() => setSectionsReady(true), []);
+  const endIntro = useCallback(() => setIntro(false), []);
 
   useEffect(() => {
     const onChange = (e: HashChangeEvent) => {
@@ -120,16 +112,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Give Intro enough time to appear before sections roll in.
-  // On first load: loader exits at 1.05s, sections mount then, 0.35s lets avatar settle.
-  // On navigate-back: no loader, BASE=0 in Intro, 0.42s gives avatar a head start.
-  const staggerDelay = sectionsReady && homeKey === 0 ? 0.35 : 0.42;
-
   return (
-    <MusicProvider>
-      <AnimatePresence>
-        {loaderVisible && <Preloader key="loader" />}
-      </AnimatePresence>
+    <>
+      {intro && <ScriptsIntro onReveal={revealFromIntro} onDone={endIntro} />}
 
       <Header
         isDark={isDark}
@@ -148,51 +133,22 @@ export default function App() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22, ease: pageEase }}
           >
-            {/* Gentle depth-settle on the whole page as the curtain lifts; the
-                real character comes from the hero cascading in element-by-element
-                (see Intro), so this stays subtle and doesn't move as one block. */}
+            {/* A quick fade only — the real intro is the grid drawing itself in
+                and the boxes rising (see HomePage / Bento). */}
             <motion.main
-              className="page-shell"
-              initial={{ opacity: 0, scale: 0.982 }}
-              animate={{
-                opacity: sectionsReady ? 1 : 0,
-                scale: sectionsReady ? 1 : 0.982,
-              }}
-              transition={{ duration: 0.9, ease: pageEase, delay: sectionsReady ? 0.1 : 0 }}
+              className="gx-page"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: sectionsReady ? 1 : 0 }}
+              transition={{ duration: 0.4, ease: pageEase }}
             >
-              {/* Intro always mounts first — it has its own animate (not whileInView) */}
-              <Intro
+              <HomePage
+                key={homeKey}
                 onCopyEmail={() => showToast('Email copied')}
-                animReady={sectionsReady}
-                revealDelay={homeKey === 0 ? 0.4 : 0}
+                ready={sectionsReady}
+                revealDelay={homeKey === 0 ? 0.1 : 0}
+                nameFromIntro={homeKey === 0 && intro}
               />
-
-              {/* All other sections only mount after the loader exits */}
-              {sectionsReady && (
-                <motion.div
-                  key={homeKey}
-                  initial="hidden"
-                  animate="show"
-                  variants={{
-                    hidden: {},
-                    show: {
-                      transition: {
-                        staggerChildren: 0.13,
-                        delayChildren: staggerDelay,
-                      },
-                    },
-                  }}
-                >
-                  <motion.div variants={secV}><Experience /></motion.div>
-                  <motion.div variants={secV}><Impact /></motion.div>
-                  <motion.div variants={secV}><Capabilities /></motion.div>
-                  <motion.div variants={secV}><Education /></motion.div>
-                  <motion.div variants={secV}><AboutTeaser /></motion.div>
-                  <motion.div variants={secV}><Quote /></motion.div>
-                </motion.div>
-              )}
             </motion.main>
-            {sectionsReady && <Footer />}
           </motion.div>
         ) : page === 'work' ? (
           <motion.div
@@ -217,9 +173,9 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <ScrollToTop />
+      <FloatingNav activeSection={activeSection} currentPage={page} />
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Toast message={message} visible={visible} />
-    </MusicProvider>
+    </>
   );
 }
