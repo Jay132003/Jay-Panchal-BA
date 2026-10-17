@@ -1,34 +1,48 @@
-import { motion } from 'motion/react';
+import { IconBrandLinkedin, IconFileCv, IconMail, IconPhone } from '@tabler/icons-react';
+import { profile } from '../data/portfolio';
+
+const LINKS = [
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/jjp01/', Icon: IconBrandLinkedin },
+  { label: 'Email', href: `mailto:${profile.email}`, Icon: IconMail },
+  { label: 'Phone', href: `tel:${profile.phone}`, Icon: IconPhone },
+  { label: 'Resume', href: profile.resumePath, Icon: IconFileCv },
+] as const;
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <motion.footer
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div>
-        <p>Navigate</p>
-        <a href="#home">Home</a>
-        <a href="#work">Work</a>
-        <a href="#skills">Skills</a>
-        <a href="#about">About</a>
-        <a href="/assets/jay-panchal-resume.pdf" target="_blank" rel="noreferrer">
-          Resume
-        </a>
+    <footer className="gx-footer">
+      <div className="gx-col">
+        <div className="gx-sep" aria-hidden="true" />
+        <div className="gx-footer-body gx-rule-top gx-rule-bottom">
+          <p className="gx-footer-line">
+            Designed &amp; built by <strong>{profile.name}</strong>. Set in Geist.
+          </p>
+          <p className="gx-footer-line gx-dim">
+            Inspired by chanhdai.com &amp; marijanapav.com
+          </p>
+          <div className="gx-footer-links">
+            {LINKS.map(({ label, href, Icon }) => {
+              const external = href.startsWith('http') || href.endsWith('.pdf');
+              return (
+                <a
+                  key={label}
+                  href={href}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noreferrer' : undefined}
+                  aria-label={label}
+                  title={label}
+                >
+                  <Icon size={17} stroke={1.6} />
+                </a>
+              );
+            })}
+          </div>
+          <p className="gx-footer-copy">© {year} {profile.name}</p>
+        </div>
+        <div className="gx-sep" aria-hidden="true" />
       </div>
-      <div>
-        <p>Connect</p>
-        <a href="mailto:panchalj481@gmail.com">Email</a>
-        <a href="https://www.linkedin.com/in/jjp01/" target="_blank" rel="noreferrer">
-          LinkedIn
-        </a>
-        <a href="tel:+919624287628">Phone</a>
-      </div>
-      <small>© {year} Jay Panchal. All rights reserved.</small>
-    </motion.footer>
+    </footer>
   );
 }

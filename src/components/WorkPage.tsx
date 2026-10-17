@@ -1,41 +1,42 @@
-import { motion } from 'motion/react';
-import Experience from './Experience';
-import Quote from './Quote';
 import Footer from './Footer';
-
-const ease = [0.22, 1, 0.36, 1] as const;
-
-const secV = {
-  hidden: { opacity: 0, y: 18 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.52, ease },
-  },
-} as const;
+import PageHero from './home/PageHero';
+import WorkHistory from './home/WorkHistory';
+import Stack from './home/Stack';
+import { Panel, Reveal, Separator } from './home/Panel';
+import { impactItems } from '../data/portfolio';
 
 export function WorkPage() {
   return (
     <>
-      <motion.main
-        className="page-shell"
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: {},
-          show: { transition: { staggerChildren: 0.13, delayChildren: 0.08 } },
-        }}
-      >
-        {/* Full experience — every entry expanded, no per-card toggle */}
-        <motion.div variants={secV}>
-          <Experience fullDetails />
-        </motion.div>
+      <main className="gx-page">
+        <div className="gx-col">
+          <PageHero figure="Fig. 2." label="Work" title="A record of measurable outcomes.">
+            <p>
+              From development training at QSpiders to leading business analysis at Neome.ai —
+              requirements, workflows and automation that ship and get used.
+            </p>
+          </PageHero>
+          <Separator />
 
-        {/* Closing quote */}
-        <motion.div variants={secV}>
-          <Quote />
-        </motion.div>
-      </motion.main>
+          <Panel title="Impact">
+            <div className="gx-impact">
+              {impactItems.map((item, i) => (
+                <Reveal key={item.title} className="gx-impact-cell" delay={i * 0.05}>
+                  <span className="gx-metric-value">{item.metric}</span>
+                  <span className="gx-impact-title">{item.title}</span>
+                  <p className="gx-impact-desc">{item.description}</p>
+                </Reveal>
+              ))}
+            </div>
+          </Panel>
+          <Separator />
+
+          <WorkHistory expanded />
+          <Separator />
+
+          <Stack />
+        </div>
+      </main>
 
       <Footer />
     </>

@@ -1,0 +1,192 @@
+---
+description: Jay Panchal portfolio — project context, conventions, and recent work. Always loaded.
+alwaysApply: true
+---
+
+# Jay Panchal portfolio — project context
+
+Personal portfolio for Jay Panchal (Business Analyst @ Neome.ai, Ahmedabad). Single-page React app.
+Jay runs and edits this project in **Cursor**, from `~/Documents/GitHub/Jay-Panchal-BA` (the copy whose
+dev server is on localhost:3000). A second clone of the same repo exists at `~/Projects/Jay-Panchal-BA`
+(used by Claude Code sessions) — the Cursor copy is the source of truth; changes made in the other
+clone must be copied here. Keep this file up to date when you make notable changes (new sections,
+new conventions, new gotchas) so every future chat starts with the right context.
+
+> `README.md` is outdated (old component list, wrong port/path). Trust this file over it.
+
+## Run it
+
+- `npm install` (Node 18+)
+- `npm run dev` → **http://localhost:3000** (`strictPort: true` in `vite.config.ts`; if 3000 is busy the
+  server fails instead of picking another port — stop the other process)
+- `npm run build` → `tsc -b && vite build` (always run before calling work done; it type-checks)
+- `npm run playlists:sync` → refresh Spotify playlist songs + covers (see "On rotation" below)
+
+## Stack
+
+React 19 + TypeScript (strict, `verbatimModuleSyntax`, no `resolveJsonModule` → use `.ts` data files,
+not `.json` imports) · Vite 8 in the Cursor copy (the other clone is still on Vite 5) · Tailwind v4 (`@tailwindcss/vite`) but the landing page is mostly plain
+CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icons-react` icons · `cobe` globe.
+
+## Structure
+
+- `src/App.tsx` — hash "router": `#about` → AboutPage, `#work-page` → WorkPage, else HomePage.
+  Shows `Preloader` first; sections mount after it lifts.
+- **Intro (Oct 17, final pick): "Three scripts"** — `src/components/intro/ScriptsIntro.tsx`, styles in
+  `src/styles/intro.css` (`sc-*`), GSAP + ScrambleText. Plays on **every load of the landing page**
+  (first visit and every refresh — Jay's call; not when a link opens #about/#work-page/a section; no
+  click/scroll skip; skipped under reduced motion). The name scrambles ગુજરાતી → हिन्दी → English at the
+  centre (each script re-centred), the verified tick pops, then it glides onto `#profile-name` and
+  the page appears (`onReveal` → `sectionsReady`). The page's h1 skips its own entrance
+  (`nameFromIntro`) so the hand-off is seamless. Two other intros ("Workflow run", "Needle drop")
+  were tried and removed. Refresh always opens at the top (`history.scrollRestoration = 'manual'`).
+  GSAP was installed with `--legacy-peer-deps` because of the existing Vite 8 vs
+  @vitejs/plugin-react 4.7 peer conflict (nothing else changed).
+- Jay's name in Hindi is **जय पंचाल** (not पांचाल) — Gujarati જય પંચાલ. Used in `ProfileHeader` and
+  `ScriptsIntro`.
+- `src/components/Preloader.tsx` (unused now, kept) — Apple-"hello"-style welcome: Jay's real signature ("Jay J. Panchal…")
+  writes itself on in **one unbroken write** (no pauses, no blinking), bold black (near-white in dark mode),
+  perfectly level and centred, holds, then blur-dissolves into the page. Jay asked for exactly this —
+  don't reintroduce colour gradients, pen-lift pauses or SVG masks (the mask version flickered).
+  `src/data/signature.ts` = centre-lines traced from a photo of Jay's signature (levelled by 4.5°), in his
+  real stroke order (from a video of Jay signing), + `keys` (pathLength keyframes: slower on curves).
+  A single requestAnimationFrame clock writes every stroke's dash offset straight to the DOM.
+  `PRELOADER_CYCLE_MS` is derived from the strokes — App uses it for the hand-off. Replaced the
+  multilingual greetings + curtain on Oct 16, 2026. `#splash` in `index.html` is a blank bg.
+- `src/components/home/HomePage.tsx` — landing page = one **bento grid** (Oct 16, 2026, from Jay's notebook
+  sketch). `Bento` / `Row` / `Box` / `BoxLabel` live in `src/components/home/Bento.tsx`; styles in
+  `src/styles/bento.css` (`bx-*` classes). Rows (column ratios in `HomePage`):
+  1. Profile — square photo cell flush to the lines (`ProfileHeader`) + name cell. Photo stays the
+     original colour photo (Jay tried monochrome + close crop on Oct 17 and went back — keep it)
+  2. Quick facts (2fr) | About (3fr)   — `Overview.tsx` (`QuickFacts`, `Connect`), `About.tsx`
+  3. Impact (13fr, count-up numbers) | Connect (7fr) — `Impact.tsx`
+  4. On rotation turntable, full width — `Playlists.tsx`. Inside the grid it's a **compact, minimal row**
+     (Oct 17, Jay: the grey stage and big deck were "too loud"): plain box background (no grey stage, no
+     album-colour wash), 176px deck · song + hairline player · the two other records small. All via
+     `.bx-rotation …` overrides in `bento.css`; `playlists.css` itself is unchanged.
+  5. Experience (11fr, current role open) | Stack (9fr) — `Experience.tsx`, `StackBox` in `Stack.tsx`
+  6. Education (1fr, CGPA as big number) | Skills (3fr) — `Skills.tsx`
+  7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "10 — Activity".
+     A year of squares from a **generated pattern** (Jay rarely uses GitHub and asked for one, Oct 17):
+     deterministic per date, natural weekday/weekend/season rhythm, GitHub-style month labels and a
+     Less→More legend. Hovering a square shows a box with the day and date only ("Wednesday · 1 July
+     2026") and leaves a fading trail. Deliberately **no count, source or "GitHub" title**, so it never
+     presents itself as real GitHub stats (Jay asked for a GitHub title; offered real data via his
+     username instead). On phones it scrolls sideways, kept at the latest months.
+  8. Sign-off, full width — `SignOff.tsx`, label "11 — Sign-off": quote of the day + contact + credits
+     (replaces Footer on home). The old pixel "JP" cover (`ProfileCover.tsx`) was removed.
+  Rows 1–3 (`.bx-hero`) fill exactly one desktop screen under the 56px header. Rows 4–7 mount after the
+  preloader. The Work/About pages still use the older narrow `gx-col` + `Panel` system (to be migrated later).
+- `src/components/home/Panel.tsx` — `Panel`, `Reveal`, `Separator`, `Label` (used by Work/About pages).
+- Music: the Spotify turntable is the site's only music. The old background player (MusicProvider,
+  5 local mp3s, "Now playing" card) was removed on Oct 15, 2026 at Jay's request — don't bring it back.
+- `src/data/portfolio.ts` (content), `src/data/quotes.ts` (daily quote), `src/data/playlists.ts`,
+  `src/data/playlistTracks.ts` (generated).
+- `src/hooks/` — `useTheme`, `useToast`, `useNow` (IST clock), `useActiveSection`, `useSpotifyController`.
+- Styles: `src/styles/globals.css` (tokens + base), `src/styles/home.css` (landing page, `gx-*`
+  classes), `src/styles/playlists.css` (turntable, `pl-*` classes). All imported in `src/main.tsx`.
+- Static files in `public/assets/` (images, logos, resume PDF, `playlists/` fallback covers).
+
+## Design conventions
+
+- Geist / Geist Mono (`--font-geist`, `--font-geist-mono`).
+- **Landing = bento grid** (`bx-*`, max 1080px): boxes of different sizes share 1px hairlines — the boxes
+  sit on a `.bx-lines` layer and the 1px grid gaps show it through. Lines stay inside the column; only short
+  crop marks run into the gutters (≥1200px). "+" marks sit where lines cross (pseudo-elements on rows/boxes).
+  **No cards inside boxes** (Jay's explicit rule): content sits straight on the box, with a mono
+  `01 — LABEL` in the top-left corner (`BoxLabel`). Inner hairlines between list items are fine.
+- Motion: on load the lines draw in top-down (`bx-draw`, clip-path), then "+" marks pop and crop marks grow;
+  box content fades up (first screen on `ready`, the rest on scroll). A neutral cursor spotlight brightens
+  lines near the pointer (`--mx/--my` set in `Bento`, fine pointers only). All off under reduced motion.
+- Header is 1080px wide on home (no rule; hairline appears once scrolled); the floating dock only shows
+  after scrolling past the first screen on home.
+- Sub-pages (Work/About): narrow lined column (`.gx-col`, max 768px), full-bleed rules, hatched separators,
+  "cards within cards" (`.gx-card`) — older system, still in use there.
+- Colour tokens in `globals.css` (`--ds-*`, `--bg`, `--text`, `--muted`, `--edge`, …).
+  **Dark mode = `html.dark` class** (toggled by `useTheme`, saved in localStorage `jay-theme`) — not the
+  OS media query. Every new style needs to work in dark mode (prefer tokens over hex).
+- Mobile: ≤720px every bento box stacks full width (profile row keeps photo beside name; Impact stays 3-up;
+  Connect becomes a row of 3 icons). Tablet tweaks ≤900px. The turntable uses a container query (520px).
+- Respect `prefers-reduced-motion`.
+- Match surrounding code: small focused components, short comments explaining *why*.
+- Process: for big changes Jay wants a grill-me style discussion first (numbered questions with a
+  recommended answer each), and building starts only once he confirms.
+
+## "On rotation" — Spotify turntable (`src/components/home/Playlists.tsx`)
+
+Recreates a vinyl-turntable UI (from a reference screen recording) for Jay's 3 Spotify playlists:
+Alive 🕊️ (`72PKk905OzSzSog1N8OLmC`, 402 songs), Mastana 💛 (`3GTTRXXSnKGdzmz6DuVlPp`, 306),
+Gujju Rocks (`6JmjJn7Ex6aZ3TppK4yMf2`, 54).
+
+### Playback — own audio engine, NOT the Spotify embed
+- `src/lib/turntableAudio.ts` (`TurntableAudio`) plays Spotify's official **30-second preview clips**
+  (`https://p.scdn.co/mp3-preview/<id>`) in one `<audio>` element, through a Web Audio graph
+  (gain + analyser). The Spotify iFrame embed was removed on Oct 16, 2026: logged-out visitors got
+  a "Get Spotify" pop-up that paused playback after a few plays, and its async state made
+  play/pause drift ("plays when I want it stopped"). Don't bring the embed back.
+- **`engine.wantsPlay` is the single source of truth** for "playing". It flips instantly on a
+  command; the UI reads it via `useSyncExternalStore(engine.subscribe, () => engine.version)`.
+  Never derive play state from audio events or timers.
+- Vinyl touches: play starts the element silently inside the click (Safari needs that), the tonearm
+  swings over for `ARM_TRAVEL_MS`, then sound lands with a pitch spin-up (`playbackRate` 0.5→1,
+  `preservesPitch = false`), a synthetic needle crackle, a ripple and an arm wobble. Pause winds
+  down (rate sags, gain fades) then pauses. All skipped under `prefers-reduced-motion`.
+- **Play order (Oct 17, Jay's choice):** each record starts on its pinned song (`startsWith` in
+  `src/data/playlists.ts`: Mastana → Tere Vaaste, Gujju Rocks → Garba Shuffle), then shuffles with no
+  repeats until every song has played (`newShuffle` / `stepShuffle` / `jumpShuffle` in `Playlists.tsx`).
+  Prev walks back through what was heard; a tracklist pick plays and shuffle carries on after it.
+  Alive starts on "295" by Sidhu Moose Wala (the song is *named* 295). It's beyond the 100 songs the
+  public embed gives us, so it's added by hand via `extraTracks` in `playlists.ts` (data taken from the
+  song's own public embed page; the sync script doesn't touch it). Jay declined Spotify API credentials,
+  so add any other "deep" song the same way.
+- Previews are always Spotify's own 30s clips. Apple Music's clips were tried for "295" (Oct 17) and
+  Jay preferred Spotify's — don't switch preview sources again unless he asks.
+- Full songs: Jay chose to keep 30s previews (full songs for every visitor aren't possible legally);
+  a "Full song on Spotify ↗" link (`.pl-full`) sits next to the Tracklist toggle.
+- Songs auto-advance (`onEnded` → next); failing clips are skipped (stops after 3 in a row).
+  Prev restarts the song if >3s in. Media Session API wires lock-screen/media keys.
+- Keyboard while focus is inside the stage: Space = play/pause, ←/→ = previous/next.
+- Spotify's embed data only exposes each playlist's **first 100 songs** — those are what can play.
+  The real totals (`PLAYLIST_TOTALS`) are shown ("100 of 402 songs"). Getting all songs would need
+  Spotify Web API credentials.
+
+### UI
+- Layout: left record · deck (platter + tonearm) · right record; details + pill player
+  (play · time · live waveform · total · prev/next) + status line + collapsible **Tracklist**
+  (every playable song with art; tap to play; scrolls to the current song).
+  Mobile (container ≤520px): deck, details, then the two other records in a row.
+- Interactions: drag the tonearm onto the vinyl → play from that groove; release it anywhere off the
+  vinyl, or after swinging it past the label (`overshotRef`), → lift/pause. A window `pointerup` +
+  `onLostPointerCapture` make sure a drag always ends (Oct 17 fix: song kept playing after a drop) (angles are normalised to 0–2π so swinging past the pivot never "drops" on the
+  run-out groove). Drag the progress ring or waveform to scrub. Click a side record → records swap
+  (motion `layoutId`); if music was on, the arm lifts, swaps, and the new record starts.
+- Each record shows the **album art of its current song** (`trackArt(p, track, 64|300|640)`), the
+  side records keep the last song played on them. The playlist cover is only a fallback.
+- Glow: album colour is sampled from the art (canvas; Spotify's CDN allows CORS) into `--pl-glow`;
+  `--pl-energy` pulses with bass *beats* (level above its running average), driving a halo under the
+  platter (`.pl-glow`) and a stage wash (`.pl-stage.is-playing::before`).
+- Waveform bars are `scaleY`-animated from the analyser (per-bar running max so quiet songs move too).
+- Spin is deliberately slow: `SPIN_DEG_PER_S = 30` (one turn per 12s) — Jay asked for "very slow".
+  Skips give the platter a quick flick (`impulseRef`).
+- Geometry is in "record units" (disc radius 100, platter centre = origin, `VIEWBOX`).
+  `needleAngleFor(r)` / `needlePoint(angle)` convert between tonearm angle and groove position.
+- All per-frame animation runs in one `requestAnimationFrame` loop writing to refs/DOM — don't move
+  it into React state.
+
+### Data
+- Edit names / genre labels ("mood") / covers in `src/data/playlists.ts`. After changing songs on
+  Spotify (or adding a playlist), run `npm run playlists:sync` (`scripts/sync-playlists.mjs`): it
+  regenerates `src/data/playlistTracks.ts` — per song `[trackId, title, artists, durationMs, artId,
+  previewId]` — plus `PLAYLIST_TOTALS`, and the fallback covers. Rate-limit safe; reuses known art.
+
+### Gotchas
+- In SVG, CSS variables don't work reliably in presentation attributes (`fill="var(--x)"`) — use
+  `style={{ fill: 'var(--x)' }}` or a CSS class.
+- Testing in a hidden/background browser pane: rAF drops to ~2fps, so animations look laggy there.
+  Judge motion in a visible tab.
+
+## Status (Oct 16, 2026)
+
+Bento landing redesign done (not committed). Turntable section, removal of the old background music,
+playlist data/sync script, and this rules file are also **not committed yet**. Next: move the Work and
+About pages onto the bento grid. Commit only when Jay asks.
