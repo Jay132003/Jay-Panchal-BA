@@ -953,69 +953,46 @@ html.dark .gx-col .mark-coral { background: color-mix(in srgb, #e93d82 22%, tran
   color: var(--muted);
 }
 
-/* ── Floating dock ─────────────────────────────────────────── */
-.gx-dock {
+/* ── Back to top ───────────────────────────────────────────── */
+.gx-to-top {
   position: fixed;
-  inset-inline: 0;
-  bottom: 20px;
+  right: 24px;
+  bottom: 24px;
   z-index: 90;
-  width: max-content;
-  margin-inline: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.gx-dock-pill,
-.gx-dock-top {
-  background: color-mix(in srgb, var(--ds-background-100) 86%, transparent);
-  backdrop-filter: saturate(1.4) blur(12px);
-  -webkit-backdrop-filter: saturate(1.4) blur(12px);
-  box-shadow: var(--ds-shadow-menu);
-}
-.gx-dock-pill {
-  display: flex;
-  gap: 2px;
-  padding: 4px;
-  border-radius: 999px;
-}
-.gx-dock-link {
-  position: relative;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  color: var(--muted);
-  transition: color 150ms ease;
-}
-.gx-dock-link:hover,
-.gx-dock-link[data-active] { color: var(--text); }
-.gx-dock-active {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: var(--ds-gray-100);
-  box-shadow: inset 0 0 0 1px var(--edge);
-}
-.gx-dock-text { position: relative; }
-.gx-dock-top {
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: 0;
   border-radius: 50%;
   color: var(--muted);
   cursor: pointer;
+  background: color-mix(in srgb, var(--ds-background-100) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  box-shadow: var(--ds-shadow-menu);
   transition: color 150ms ease;
 }
-.gx-dock-top:hover { color: var(--text); }
-.gx-dock-top svg { width: 16px; height: 16px; }
+.gx-to-top:hover { color: var(--text); }
+.gx-to-top:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.gx-to-top svg { width: 16px; height: 16px; }
 
 /* ── Responsive ────────────────────────────────────────────── */
+/* Phones keep the section links (the bottom dock that used to carry them
+   was removed on Oct 18); Resume is in Connect and the sign-off instead. */
 @media (max-width: 720px) {
-  .gx-nav { display: none; }
+  .gx-nav a { padding: 6px 8px; font-size: 13.5px; }
+}
+@media (max-width: 480px) {
+  .gx-header--wide { padding-inline: 0; }
+  .gx-header .gx-logo { margin-right: 4px; }
+  .gx-nav { gap: 0; }
+  .gx-nav a { padding: 6px 7px; }
+  .gx-nav a[href$=".pdf"] { display: none; }
 }
 
 @media (max-width: 640px) {
+  .gx-to-top { right: 16px; bottom: 16px; }
   .gx-search { width: 32px; padding: 0; justify-content: center; }
   .gx-search-text,
   .gx-search kbd { display: none; }
@@ -1040,8 +1017,6 @@ html.dark .gx-col .mark-coral { background: color-mix(in srgb, #e93d82 22%, tran
   .gx-metric-title { font-size: 12px; }
   .gx-quote p { font-size: 17px; }
   .gx-company-head { flex-wrap: wrap; }
-  .gx-dock { bottom: 14px; }
-  .gx-dock-link { padding: 6px 11px; }
 
   .gx-hero-strip { height: 64px; }
   .gx-hero-title { font-size: 30px; }

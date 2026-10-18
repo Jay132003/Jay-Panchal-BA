@@ -196,7 +196,9 @@ export const AnimatedThemeToggler = ({
       }
     }
 
-    if (typeof document.startViewTransition !== "function") {
+    // No sweep for people who've asked their system for reduced motion.
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (typeof document.startViewTransition !== "function" || still) {
       applyTheme()
       return
     }
@@ -239,7 +241,7 @@ export const AnimatedThemeToggler = ({
           { clipPath },
           {
             duration,
-            easing: shape === "star" ? "linear" : "ease-in-out",
+            easing: shape === "star" ? "linear" : "cubic-bezier(.65, 0, .35, 1)",
             fill: "forwards",
             pseudoElement: "::view-transition-new(root)",
           }

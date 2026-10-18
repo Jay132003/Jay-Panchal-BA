@@ -1,30 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 
+/** The id of the section sitting under the header right now, or '' when
+ *  none of `ids` is there (e.g. the turntable, which has no header link).
+ *  Oct 18: it used to keep the last section passed, so "About" stayed lit
+ *  all the way down past the turntable. */
 export function useActiveSection(ids: string[], resetKey = 0): string {
-  const [active, setActive] = useState(ids[0]);
+  const [active, setActive] = useState('');
   const idsRef = useRef(ids);
 
   useEffect(() => {
-    const HEADER = 90;
+    const LINE = 72; // just below the 56px sticky header
 
     const detect = () => {
-      // Guard: only treat as "at bottom" when user has actually scrolled.
-      // Without this, on first load the DOM only has Intro so scrollHeight is
-      // tiny, which makes atBottom=true and incorrectly snaps to the last id.
-      const atBottom =
-        window.scrollY > 50 &&
-        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 60;
-
-      if (atBottom) {
-        setActive(idsRef.current[idsRef.current.length - 1]);
-        return;
-      }
-
-      let current = idsRef.current[0];
+      let current = '';
       for (const id of idsRef.current) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        if (el.getBoundingClientRect().top <= HEADER) current = id;
+        const r = document.getElementById(id)?.getBoundingClientRect();
+        if (r && r.top <= LINE && r.bottom > LINE) current = id;
       }
       setActive(current);
     };
@@ -38,12 +29,12 @@ export function useActiveSection(ids: string[], resetKey = 0): string {
     };
   }, []);
 
-  // Reset to 'home' whenever the caller signals a fresh page visit (homeKey change).
-  // Scroll events will update it naturally as the user scrolls.
+  // A fresh home visit (homeKey change) starts with nothing lit; scrolling
+  // updates it from there.
   useEffect(() => {
     if (resetKey === 0) return;
-    setActive(ids[0]);
-  }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
+    setActive('');
+  }, [resetKey]);
 
   return active;
 }

@@ -24,6 +24,8 @@ export type ExperienceItem = {
   period: string;
   location: string;
   isCurrent?: boolean;
+  /** One line for the landing page; the Work page shows every detail. */
+  headline: string;
   details: string[];
   website?: string;
   linkedIn?: string;
@@ -37,6 +39,7 @@ export const experiences: ExperienceItem[] = [
     period: 'Jun 2024 – Present',
     location: 'Ahmedabad, India',
     isCurrent: true,
+    headline: 'Shipped 100+ automation modules and automated 70% of manual work.',
     website: 'https://neome.ai',
     linkedIn: 'https://www.linkedin.com/company/neome-ai/',
     technologies: [
@@ -49,7 +52,7 @@ export const experiences: ExperienceItem[] = [
       { name: 'Salesforce',  icon: `${DEVICON}/salesforce/salesforce-original.svg` },
       { name: 'Notion',      icon: 'https://cdn.simpleicons.org/notion' },
       { name: 'SQL',         icon: `${DEVICON}/mysql/mysql-original.svg` },
-      { name: 'Excel',       icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+      { name: 'Excel',       icon: '/assets/icons/excel.svg' },
       { name: 'Postman',     icon: `${DEVICON}/postman/postman-original.svg` },
       { name: 'Git',         icon: `${DEVICON}/git/git-original.svg` },
     ],
@@ -67,6 +70,7 @@ export const experiences: ExperienceItem[] = [
     role: 'Frontend Development Intern',
     period: 'Jan 2024 – Jul 2024',
     location: 'Ahmedabad, India',
+    headline: 'Built Android apps with REST APIs and client-server workflows.',
     technologies: [
       { name: 'Android', icon: `${DEVICON}/android/android-original.svg` },
       { name: 'MySQL',   icon: `${DEVICON}/mysql/mysql-original.svg` },
@@ -83,6 +87,7 @@ export const experiences: ExperienceItem[] = [
     role: 'Development & Testing Trainee',
     period: 'Jul 2023 – Aug 2023',
     location: 'Ahmedabad, India',
+    headline: 'Trained in Python, SQL, web development and manual testing.',
     technologies: [
       { name: 'Python', icon: `${DEVICON}/python/python-original.svg` },
       { name: 'SQL',    icon: `${DEVICON}/mysql/mysql-original.svg` },
@@ -102,7 +107,7 @@ export const techStack = [
   { name: 'Git',        icon: `${DEVICON}/git/git-original.svg` },
   { name: 'SQL',        icon: `${DEVICON}/mysql/mysql-original.svg` },
   { name: 'Python',     icon: `${DEVICON}/python/python-original.svg` },
-  { name: 'Excel',      icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+  { name: 'Excel',      icon: '/assets/icons/excel.svg' },
   { name: 'Confluence', icon: `${DEVICON}/confluence/confluence-original.svg` },
   { name: 'Android',    icon: `${DEVICON}/android/android-original.svg` },
   { name: 'HTML5',      icon: `${DEVICON}/html5/html5-original.svg` },
@@ -121,7 +126,7 @@ export const stackGroups: StackGroup[] = [
       { name: 'Jira',       icon: `${DEVICON}/jira/jira-original.svg` },
       { name: 'Confluence', icon: `${DEVICON}/confluence/confluence-original.svg` },
       { name: 'Notion',     icon: 'https://cdn.simpleicons.org/notion' },
-      { name: 'Excel',      icon: `${DEVICON}/microsoftexcel/microsoftexcel-plain.svg` },
+      { name: 'Excel',      icon: '/assets/icons/excel.svg' },
     ],
   },
   {
@@ -191,10 +196,6 @@ export const capabilities: CapabilityItem[] = [
   {
     title: 'Solutions Engineering',
     tags: ['Workflow Automation', 'Rule Engine Design', 'System Configuration', 'Logic Building', 'Optimization', 'Integrations'],
-  },
-  {
-    title: 'Tools & Technology',
-    tags: ['SQL', 'Excel (Advanced)', 'Jira', 'Confluence', 'REST APIs', 'Figma', 'Git'],
   },
   {
     title: 'Soft Skills',

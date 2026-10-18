@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import Header from './components/Header';
 import HomePage from './components/home/HomePage';
-import FloatingNav from './components/home/FloatingNav';
+import BackToTop from './components/home/BackToTop';
 import CommandPalette from './components/CommandPalette';
 import Toast from './components/Toast';
 import ScriptsIntro from './components/intro/ScriptsIntro';
@@ -11,6 +11,7 @@ import { WorkPage } from './components/WorkPage';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
+import { arriveAt } from './lib/arrival';
 
 type Page = 'home' | 'about' | 'work';
 
@@ -44,7 +45,7 @@ export default function App() {
   const [page, setPage] = useState<Page>(getPage);
   // Increment to force a full remount + re-stagger every time home is entered
   const [homeKey, setHomeKey] = useState(0);
-  const activeSection = useActiveSection(['home', 'about-teaser', 'work', 'skills'], homeKey);
+  const activeSection = useActiveSection(['work', 'skills'], homeKey);
 
   useEffect(() => {
     const splash = document.getElementById('splash');
@@ -67,10 +68,20 @@ export default function App() {
       const leftSubpage = oldHash === '#about' || oldHash === '#work-page';
 
       if (next === 'home') {
+        const toSection = Boolean(targetId) && targetId !== 'home';
+
+        if (!leftSubpage && toSection) {
+          // Already on home and jumping to a section (e.g. "Work" in the
+          // header): the browser has scrolled to the anchor — don't remount or
+          // snap back to the top, which made the first click land at the top.
+          arriveAt(targetId);
+          return;
+        }
+
         // Force every section to remount and re-animate on every home visit
         setHomeKey(k => k + 1);
 
-        if (leftSubpage && targetId && targetId !== 'home') {
+        if (leftSubpage && toSection) {
           // Coming from a full sub-page (About/Work) and aiming at a specific
           // section (e.g. clicking "Skills" while on the About page) — the
           // target element doesn't exist until the page-switch animation
@@ -78,11 +89,7 @@ export default function App() {
           // of just landing at the top.
           let attempts = 0;
           const tryScroll = () => {
-            const el = document.getElementById(targetId);
-            if (el) {
-              el.scrollIntoView({ behavior: 'instant' });
-              return;
-            }
+            if (arriveAt(targetId)) return;
             if (attempts++ < 20) window.setTimeout(tryScroll, 40);
           };
           window.setTimeout(tryScroll, 260);
@@ -173,7 +180,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <FloatingNav activeSection={activeSection} currentPage={page} />
+      <BackToTop />
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Toast message={message} visible={visible} />
     </>
