@@ -9,6 +9,7 @@ import Skills, { Education } from './Skills';
 import SignOff from './SignOff';
 import { ActivityBox } from './Activity';
 import { Bento, Row } from './Bento';
+import { LinkedHoverProvider } from './LinkedHover';
 
 type HomePageProps = {
   onCopyEmail: () => void;
@@ -46,10 +47,12 @@ export default function HomePage({ onCopyEmail, ready, revealDelay, nameFromIntr
             <Row>
               <Playlists />
             </Row>
-            <Row cols="11fr 9fr">
-              <Experience />
-              <StackBox />
-            </Row>
+            <LinkedHoverProvider>
+              <Row cols="11fr 9fr">
+                <Experience />
+                <StackBox />
+              </Row>
+            </LinkedHoverProvider>
             <Row cols="1fr 3fr">
               <Education />
               <Skills />

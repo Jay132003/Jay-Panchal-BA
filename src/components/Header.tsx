@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { motion } from 'motion/react';
 import { Search } from 'lucide-react';
 import { AnimatedThemeToggler } from './ui/animated-theme-toggler';
+import { arriveAt } from '../lib/arrival';
 
 type HeaderProps = {
   isDark: boolean;
@@ -30,6 +31,14 @@ function LogoMark() {
   );
 }
 
+/** Clicking "Work" again once its hash is already set fires no hashchange,
+ *  so jump (and mark the box) here instead. */
+function sameHashJump(e: MouseEvent<HTMLAnchorElement>) {
+  const hash = e.currentTarget.hash;
+  if (hash !== window.location.hash) return;
+  if (arriveAt(hash.slice(1))) e.preventDefault();
+}
+
 export default function Header({
   isDark,
   onToggleTheme,
@@ -40,11 +49,12 @@ export default function Header({
   const isActive = (key: string) =>
     (key === 'work' && (currentPage === 'work' || (currentPage === 'home' && activeSection === 'work'))) ||
     (key === 'skills' && currentPage === 'home' && activeSection === 'skills') ||
-    (key === 'about' && (currentPage === 'about' || (currentPage === 'home' && activeSection === 'about-teaser')));
+    // "About" opens the About page, so it only lights up there.
+    (key === 'about' && currentPage === 'about');
 
-  const wide = currentPage === 'home';
-  // On the landing grid the header has no rule of its own (the grid's top
-  // line sits right under it); a full-width hairline appears once scrolled.
+  // Every page sits on the 1080px grid (Work and About since Oct 18), so the
+  // header has no rule of its own (the grid's top line sits right under it);
+  // a full-width hairline appears once scrolled.
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 4);
@@ -56,20 +66,20 @@ export default function Header({
   return (
     <motion.div
       className="gx-header-wrap"
-      data-wide={wide || undefined}
+      data-wide
       data-scrolled={scrolled || undefined}
       initial={{ opacity: 0, y: -14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
     >
-      <header className={wide ? 'gx-header gx-header--wide' : 'gx-header gx-rule-bottom'}>
+      <header className="gx-header gx-header--wide">
         <a href="#home" className="gx-logo" aria-label="Jay Panchal — home">
           <LogoMark />
         </a>
 
         <nav className="gx-nav" aria-label="Primary navigation">
-          <a href="#work" data-active={isActive('work') || undefined}>Work</a>
-          <a href="#skills" data-active={isActive('skills') || undefined}>Skills</a>
+          <a href="#work" data-active={isActive('work') || undefined} onClick={sameHashJump}>Work</a>
+          <a href="#skills" data-active={isActive('skills') || undefined} onClick={sameHashJump}>Skills</a>
           <a href="#about" data-active={isActive('about') || undefined}>About</a>
           <a href="/assets/jay-panchal-resume.pdf" target="_blank" rel="noreferrer">Resume</a>
         </nav>
@@ -90,7 +100,7 @@ export default function Header({
             theme={isDark ? 'dark' : 'light'}
             onThemeChange={onToggleTheme}
             variant="circle"
-            duration={500}
+            duration={700}
           />
         </div>
       </header>

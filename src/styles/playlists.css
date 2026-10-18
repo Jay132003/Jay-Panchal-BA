@@ -118,6 +118,20 @@ html.dark .pl-stage {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+/* Cover flight (Oct 18): while a picked song's cover is in the air, the
+   record shows bare vinyl; the ghost lands on it and fades into the art. */
+.pl-deck-disc[data-incoming] .pl-record-art { opacity: 0 !important; }
+.pl-flight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 150;
+  background-color: #070707;
+  background-position: center;
+  background-size: cover;
+  pointer-events: none;
+  will-change: transform;
+}
 .pl-record-sheen {
   position: absolute;
   inset: 0;

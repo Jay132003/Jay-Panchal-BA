@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 
@@ -64,17 +64,15 @@ export function Bento({ children, ready, delay = 0 }: BentoProps) {
   );
 }
 
-type RowProps = {
+type RowProps = HTMLAttributes<HTMLDivElement> & {
   /** grid-template-columns for this row, e.g. "2fr 3fr". */
   cols?: string;
-  className?: string;
-  children: ReactNode;
 };
 
 /** One band of boxes. Draws the crop marks and "+" corners on its top edge. */
-export function Row({ cols = '1fr', className, children }: RowProps) {
+export function Row({ cols = '1fr', className, children, ...rest }: RowProps) {
   return (
-    <div className={cn('bx-row', className)} style={{ '--bx-cols': cols } as CSSProperties}>
+    <div {...rest} className={cn('bx-row', className)} style={{ '--bx-cols': cols } as CSSProperties}>
       <span className="bx-crop bx-crop--l" aria-hidden="true" />
       <span className="bx-crop bx-crop--r" aria-hidden="true" />
       {children}
@@ -133,3 +131,27 @@ export function BoxLabel({ index, label, aside }: { index?: number; label: strin
     </header>
   );
 }
+
+/** Fades a block up the first time it scrolls into view. */
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 14, filter: 'blur(4px)' }}
+      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.55, delay, ease }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+

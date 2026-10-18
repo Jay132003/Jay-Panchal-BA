@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate, useInView } from 'motion/react';
+import { useInView, useReducedMotion } from 'motion/react';
 import { impactItems } from '../../data/portfolio';
 import { Box } from './Bento';
 
-/** The three headline numbers, large, counting up the first time they show. */
+/** The three headline numbers, large, rolling into place like an odometer
+ *  the first time they show. */
 export default function Impact({ ready, delay }: { ready: boolean; delay: number }) {
   return (
     <Box index={3} label="Impact" ready={ready} delay={delay} className="bx-impact">
       <div className="bx-metrics">
         {impactItems.map((item, i) => (
           <div key={item.title} className="bx-metric">
-            <CountUp value={item.metric} start={ready} delay={delay + 0.2 + i * 0.12} />
+            <Odometer value={item.metric} start={ready} delay={delay + 0.2 + i * 0.12} />
             <span className="bx-metric-title">{item.title}</span>
             <span className="bx-metric-desc">{item.description}</span>
           </div>
@@ -20,39 +21,61 @@ export default function Impact({ ready, delay }: { ready: boolean; delay: number
   );
 }
 
-/** "100+" → counts 0…100 and keeps the "+". Writes straight to the DOM so the
- *  tween doesn't re-render React every frame. */
-function CountUp({ value, start, delay }: { value: string; start: boolean; delay: number }) {
+/** "100+" → a strip of digits per column that rolls to its number, the last
+ *  column spinning most (Oct 18, replaces the count-up). Pure CSS transitions,
+ *  so nothing re-renders per frame. */
+export function Odometer({ value, start, delay }: { value: string; start: boolean; delay: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
-  const [done, setDone] = useState(false);
+  const still = useReducedMotion();
+  const readyAt = useRef<number | null>(null);
+  const [rollDelay, setRollDelay] = useState<number | null>(null);
   const match = value.match(/^(\d+)(.*)$/);
-  const target = match ? Number(match[1]) : 0;
-  const suffix = match ? match[2] : '';
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el || !match || !start || !inView || done) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setDone(true);
-      return;
-    }
-    el.textContent = `0${suffix}`;
-    const controls = animate(0, target, {
-      duration: 1.4,
-      delay,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => {
-        el.textContent = `${Math.round(v)}${suffix}`;
-      },
-      onComplete: () => setDone(true),
+    if (start && readyAt.current == null) readyAt.current = performance.now();
+  }, [start]);
+
+  useEffect(() => {
+    if (!start || !inView || rollDelay != null) return;
+    // On the first screen it waits for the page's cascade; scrolled to later
+    // (or reached via a section link), it rolls straight away instead of
+    // sitting on "0" for a second.
+    const late = performance.now() - (readyAt.current ?? 0) > 1500;
+    // Two frames, so the strip is painted at 0 before it starts moving.
+    let id = requestAnimationFrame(() => {
+      id = requestAnimationFrame(() => setRollDelay(late ? 0.05 : delay));
     });
-    return () => controls.stop();
+    return () => cancelAnimationFrame(id);
   }, [start, inView]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  if (!match || still) {
+    return <span className="bx-metric-value">{value}</span>;
+  }
+
+  const digits = match[1].split('');
   return (
-    <span ref={ref} className="bx-metric-value">
-      {value}
+    <span ref={ref} className="bx-metric-value bx-odo" role="img" aria-label={value}>
+      {digits.map((d, i) => {
+        const turns = digits.length - i; // like a real counter, the last digit spins most
+        const steps = turns * 10 + Number(d);
+        return (
+          <span key={i} className="bx-odo-col" aria-hidden="true">
+            <span
+              className="bx-odo-strip"
+              style={{
+                transform: rollDelay == null ? undefined : `translateY(${-steps}em)`,
+                transitionDelay: `${(rollDelay ?? 0) + i * 0.08}s`,
+              }}
+            >
+              {Array.from({ length: steps + 1 }, (_, k) => (
+                <span key={k}>{k % 10}</span>
+              ))}
+            </span>
+          </span>
+        );
+      })}
+      <span className="bx-odo-suffix" aria-hidden="true">{match[2]}</span>
     </span>
   );
 }

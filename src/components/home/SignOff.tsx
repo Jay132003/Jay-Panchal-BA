@@ -10,17 +10,17 @@ const LINKS = [
   { label: 'Resume', href: profile.resumePath, Icon: IconFileCv },
 ] as const;
 
-/** Last row: the quote of the day, contact links and credits. Replaces the
- *  old footer on the landing page. (The activity squares sit in their own
+/** Last row of every page: the quote of the day, contact links and credits.
+ *  Replaces the old footer (on Work and About too since Oct 18). (The activity squares sit in their own
  *  row above it since Oct 17.) */
-export default function SignOff() {
+export default function SignOff({ index = 11 }: { index?: number }) {
   const { text, author, source } = getDailyQuote();
   const year = new Date().getFullYear();
 
   return (
     <footer className="bx-box bx-signoff" aria-label="Sign-off">
       <div className="bx-box-in">
-        <BoxLabel index={11} label="Sign-off" />
+        <BoxLabel index={index} label="Sign-off" />
         <blockquote className="bx-quote">
           <p>“{text}”</p>
           <cite>— {author}{source ? `, ${source}` : ''}</cite>
@@ -46,6 +46,7 @@ export default function SignOff() {
           </div>
           <p className="bx-credits">
             Designed &amp; built by <strong>{profile.name}</strong>. Set in Geist. © {year}
+            <span className="bx-credits-dim">Inspired by chanhdai.com &amp; marijanapav.com</span>
           </p>
         </div>
       </div>

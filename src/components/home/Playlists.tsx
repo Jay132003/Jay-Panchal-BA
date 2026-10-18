@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type Ref,
@@ -23,9 +24,9 @@ import {
   type PlaylistTrack,
 } from '../../data/playlists';
 import { TurntableAudio } from '../../lib/turntableAudio';
+import { flyCover } from '../../lib/coverFlight';
 import { cn } from '../../lib/utils';
-import { Reveal } from './Panel';
-import { BoxLabel } from './Bento';
+import { BoxLabel, Reveal } from './Bento';
 
 /* ── Deck geometry ─────────────────────────────────────────────
    Everything on the deck is drawn in "record units": the disc has a radius
@@ -297,6 +298,7 @@ export default function Playlists() {
   const armAngleRef = useRef(ANGLE_REST);
   const impulseRef = useRef(0);
   const discRef = useRef<HTMLDivElement | null>(null);
+  const flightRef = useRef(0);
 
   /** The stylus meets the vinyl: crackle, ripple, a little settle. */
   const touchDown = useCallback(() => {
@@ -358,13 +360,32 @@ export default function Playlists() {
     [cue, current, songCount, shuffles, gentle],
   );
 
-  /** Pick a song from the tracklist and play it. */
+  /** Pick a song from the tracklist and play it. Its cover flies from the
+   *  list onto the record (the flight carries the spin, so no platter flick). */
   const pick = useCallback(
-    (i: number) => {
+    (i: number, thumb?: HTMLImageElement | null) => {
       const e = engineRef.current;
       if (!e) return;
       if (i === index && e.wantsPlay) return;
-      if (!gentle) impulseRef.current = (i > index ? 1 : -1) * 260;
+      const disc = discRef.current;
+      const flight = String(++flightRef.current);
+      const flying =
+        !!thumb &&
+        !!disc &&
+        i !== index &&
+        flyCover({
+          from: thumb,
+          to: disc,
+          src: trackArt(current, current.tracks[i], 300),
+          angle: () => anglesRef.current[current.id] ?? 0,
+          onLand: () => {
+            // Only the latest flight uncovers the record (fast double picks).
+            if (disc.dataset.incoming === flight) delete disc.dataset.incoming;
+          },
+        });
+      // Old cover lifts off while the new one is in the air.
+      if (flying && disc) disc.dataset.incoming = flight;
+      if (!gentle && !flying) impulseRef.current = (i > index ? 1 : -1) * 260;
       if (i !== index) jumpShuffle(shuffles[current.id], i);
       if (e.wantsPlay) cue(current, i, true);
       else {
@@ -927,6 +948,7 @@ export default function Playlists() {
                     className={cn('pl-source-toggle', listOpen && 'is-open')}
                     onClick={() => setListOpen((o) => !o)}
                     aria-expanded={listOpen}
+                    aria-controls="pl-tracklist"
                   >
                     Tracklist <ChevronUp aria-hidden="true" />
                   </button>
@@ -935,15 +957,17 @@ export default function Playlists() {
                     Full song on Spotify <ArrowUpRight aria-hidden="true" />
                   </a>
                 </div>
-                <Tracklist
-                  playlist={current}
-                  index={index}
-                  playing={wantsPlay}
-                  open={listOpen}
-                  onPick={pick}
-                />
               </div>
             </div>
+            {/* Full width under the row (Jay, Oct 18): opening it inside the
+                song column grew the row and left the records floating. */}
+            <Tracklist
+              playlist={current}
+              index={index}
+              playing={wantsPlay}
+              open={listOpen}
+              onPick={pick}
+            />
           </LayoutGroup>
         </Reveal>
       </div>
@@ -1076,7 +1100,7 @@ function Tracklist({
   index: number;
   playing: boolean;
   open: boolean;
-  onPick: (i: number) => void;
+  onPick: (i: number, thumb: HTMLImageElement | null) => void;
 }) {
   const listRef = useRef<HTMLOListElement | null>(null);
 
@@ -1085,14 +1109,17 @@ function Tracklist({
     const list = listRef.current;
     const row = list?.querySelector<HTMLElement>('[aria-current="true"]');
     if (!open || !list || !row) return;
-    const top = row.offsetTop - list.clientHeight / 2 + row.clientHeight / 2;
+    // Measured from the boxes, not offsetTop: the rows animate in, which
+    // changes what offsetTop is measured from.
+    const offset = row.getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop;
+    const top = offset - list.clientHeight / 2 + row.clientHeight / 2;
     list.scrollTo({ top, behavior: 'smooth' });
   }, [open, index, playlist.id]);
 
   const partial = playlist.tracks.length < playlist.total;
 
   return (
-    <div className={cn('pl-source', open && 'is-open')}>
+    <div id="pl-tracklist" className={cn('pl-source', open && 'is-open')}>
       <div className="pl-source-inner" inert={!open}>
         <div className="pl-tracklist">
           <div className="pl-tracklist-head">
@@ -1103,12 +1130,12 @@ function Tracklist({
             {playlist.tracks.map((t: PlaylistTrack, i) => {
               const isCurrent = i === index;
               return (
-                <li key={t[0]}>
+                <li key={t[0]} style={{ '--i': Math.min(i, 14) } as CSSProperties}>
                   <button
                     type="button"
                     className="pl-song"
                     aria-current={isCurrent}
-                    onClick={() => onPick(i)}
+                    onClick={(e) => onPick(i, e.currentTarget.querySelector('img'))}
                   >
                     <span className="pl-song-num">
                       {isCurrent && playing ? (

@@ -64,8 +64,23 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      (Oct 17, Jay: the grey stage and big deck were "too loud"): plain box background (no grey stage, no
      album-colour wash), 176px deck · song + hairline player · the two other records small. All via
      `.bx-rotation …` overrides in `bento.css`; `playlists.css` itself is unchanged.
-  5. Experience (11fr, current role open) | Stack (9fr) — `Experience.tsx`, `StackBox` in `Stack.tsx`
-  6. Education (1fr, CGPA as big number) | Skills (3fr) — `Skills.tsx`
+     The **Tracklist** (Oct 18) opens as a full-width band *under* the row (edge-to-edge hairline,
+     songs in 3/2/1 columns by container width, soft top/bottom fade, rows stagger in) — never
+     inside the song column, which used to grow the row and leave the records floating.
+     **Cover flight**: picking a song makes its cover fly from the list onto the record
+     (`src/lib/coverFlight.ts`, rAF-driven so it lands on the platter's live angle; the record shows
+     bare vinyl via `data-incoming` until it lands; skipped under reduced motion or when the record is
+     off-screen).
+  5. Experience (11fr) | Stack (9fr) — redesigned Oct 18. `Experience.tsx`: a **career bar** (one
+     lane per role on a shared year axis, bars draw in chronologically, green "Now" pulse) + one
+     line per role (logo, company, role · duration, `headline` from `portfolio.ts`); each row links
+     to the Work page — no accordions. `StackBox` in `Stack.tsx`: 16 logos in a 4×4 grid of
+     hairline cells that run into the box's own lines; grey until hovered (colour by default on
+     touch screens). **Linked hover** (`LinkedHover.tsx`): hover a role → its tools light up in
+     Stack and the rest dim; hover a tool → the roles that used it light up (role `technologies`,
+     `MySQL` aliased to `SQL`).
+  6. Education (1fr, CGPA as big number) | Skills (3fr, 3 groups in 3 columns) — `Skills.tsx`. The
+     "Tools & Technology" skill group was dropped Oct 18 (it repeated Stack).
   7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "10 — Activity".
      A year of squares from a **generated pattern** (Jay rarely uses GitHub and asked for one, Oct 17):
      deterministic per date, natural weekday/weekend/season rhythm, GitHub-style month labels and a
@@ -74,10 +89,28 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      presents itself as real GitHub stats (Jay asked for a GitHub title; offered real data via his
      username instead). On phones it scrolls sideways, kept at the latest months.
   8. Sign-off, full width — `SignOff.tsx`, label "11 — Sign-off": quote of the day + contact + credits
-     (replaces Footer on home). The old pixel "JP" cover (`ProfileCover.tsx`) was removed.
+     (the last row of every page; takes an `index` prop; credits include "Inspired by chanhdai.com &
+     marijanapav.com"). The old pixel "JP" cover (`ProfileCover.tsx`) was removed.
   Rows 1–3 (`.bx-hero`) fill exactly one desktop screen under the 56px header. Rows 4–7 mount after the
-  preloader. The Work/About pages still use the older narrow `gx-col` + `Panel` system (to be migrated later).
-- `src/components/home/Panel.tsx` — `Panel`, `Reveal`, `Separator`, `Label` (used by Work/About pages).
+  preloader.
+- **Work page** (`src/components/WorkPage.tsx`, `#work-page`) — on the same grid since Oct 18: title box
+  with a large `CareerBar` (company + duration over each bar; click a bar → `arriveAt(roleId(company))`
+  jumps to that role with the trace) · Impact as three boxes (`Odometer`) · one `RoleRow` per role
+  (`2fr 3fr`: sticky facts box with logo/role/location/dates/links | every bullet + the tools used) —
+  nothing opens or closes · `StackBox wide` (8 columns) · `NextPage` → About · `SignOff`. The whole page is
+  inside `LinkedHoverProvider`, so hovering a role row lights its career bar and its tools in Stack.
+- **About page** (`src/components/about/AboutPage.tsx`, `#about`) — photo + intro row mirroring the landing
+  profile row (3:4 photo, opening line up top, "Yep, That's me — Jay Panchal." at the foot) · the story in
+  `CHAPTERS` rows (`1fr 3fr`: sticky chapter label | paragraphs, Jay's text word for word) with two
+  `PULL_QUOTES` full-width rows · Approach as three boxes · `NextPage` → Work · `SignOff`.
+  **Marker-pen highlights**: `useHighlighter` adds `data-lit` to each `mark`/`.mark-coral` in the story
+  as it scrolls into view and the highlight sweeps in left→right (`.bx-story mark`, background-size).
+- Shared grid pieces: `Bento`/`Row`/`Box`/`BoxLabel`/`Reveal` (`Bento.tsx`; `Row` takes DOM props),
+  `CareerBar.tsx`, `NextPage.tsx`, `roles.ts` (`LOGOS`, `roleId`, `parseMonth`, `describePeriod`,
+  `spanOf`), `LinkedHover.tsx`. The old narrow-column pieces (`Panel`, `PageHero`, `Separator`,
+  `Footer`, `WorkHistory`, `Glance`) were deleted on Oct 18. Their `gx-*` CSS in `home.css` is still
+  there (dead, safe to prune later); `gx-header`, `gx-nav`, `gx-chip-icon`, `gx-badge-current`,
+  `gx-company-logo`, `gx-bullets`, `gx-tag(s)`, `gx-count`, `gx-meta-sep` are still in use.
 - Music: the Spotify turntable is the site's only music. The old background player (MusicProvider,
   5 local mp3s, "Now playing" card) was removed on Oct 15, 2026 at Jay's request — don't bring it back.
 - `src/data/portfolio.ts` (content), `src/data/quotes.ts` (daily quote), `src/data/playlists.ts`,
@@ -98,10 +131,23 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
 - Motion: on load the lines draw in top-down (`bx-draw`, clip-path), then "+" marks pop and crop marks grow;
   box content fades up (first screen on `ready`, the rest on scroll). A neutral cursor spotlight brightens
   lines near the pointer (`--mx/--my` set in `Bento`, fine pointers only). All off under reduced motion.
-- Header is 1080px wide on home (no rule; hairline appears once scrolled); the floating dock only shows
-  after scrolling past the first screen on home.
-- Sub-pages (Work/About): narrow lined column (`.gx-col`, max 768px), full-bleed rules, hatched separators,
-  "cards within cards" (`.gx-card`) — older system, still in use there.
+- Header is 1080px wide on home (no rule; hairline appears once scrolled). It is the only nav — the
+  bottom floating dock was removed (Jay, Oct 18); only a round back-to-top
+  button (`BackToTop`, `.gx-to-top`, bottom-right) shows after scrolling. Phones keep Work/Skills/About
+  in the header (Resume hidden ≤480px). `useActiveSection(['work','skills'])` lights a link only while
+  that box is under the header; "About" lights only on the About page. Section jumps are handled in
+  `App`'s hashchange handler (no remount when already on home) and, for a repeat click on the same
+  hash, by `sameHashJump` in `Header`; both call `arriveAt` (`src/lib/arrival.ts`), which scrolls and
+  runs the **arrival trace** — a line that runs once around the box's edge (`.bx-arrive`, conic
+  gradient + `@property --bx-arc`) and fades.
+- **Rule (Jay, Oct 18): nothing clicked may change one box's height inside a two-box row.** Anything
+  that expands goes in a full-width row (like the tracklist band).
+- Impact numbers roll in like an **odometer** (`Odometer` in `Impact.tsx`, CSS transitions on digit
+  strips; rolls at once if reached later instead of sitting on 0). The theme toggle sweeps the new
+  theme in a circle from the button (`AnimatedThemeToggler`, View Transitions; off under reduced motion).
+- Tool icons come from devicon/simple-icons CDNs; devicon's Excel icon 403s, so Excel is a local
+  `public/assets/icons/excel.svg` (Simple Icons glyph, Excel green).
+- Every page (home, Work, About) is on the 1080px bento grid; box numbers run down each page.
 - Colour tokens in `globals.css` (`--ds-*`, `--bg`, `--text`, `--muted`, `--edge`, …).
   **Dark mode = `html.dark` class** (toggled by `useTheme`, saved in localStorage `jay-theme`) — not the
   OS media query. Every new style needs to work in dark mode (prefer tokens over hex).
@@ -185,8 +231,9 @@ Gujju Rocks (`6JmjJn7Ex6aZ3TppK4yMf2`, 54).
 - Testing in a hidden/background browser pane: rAF drops to ~2fps, so animations look laggy there.
   Judge motion in a visible tab.
 
-## Status (Oct 16, 2026)
+## Status
 
-Bento landing redesign done (not committed). Turntable section, removal of the old background music,
-playlist data/sync script, and this rules file are also **not committed yet**. Next: move the Work and
-About pages onto the bento grid. Commit only when Jay asks.
+Bento landing merged to `main` (PR #1). Oct 18 (not committed yet): floating dock removed, back-to-top,
+header jump fixes, tracklist band + cover flight, Experience career bar, Stack logo grid, linked hover,
+odometer, arrival trace, phone header links, and Work + About rebuilt on the grid (old column pieces
+deleted). Possible next: prune the dead `gx-*` CSS in `home.css`. Commit only when Jay asks.
