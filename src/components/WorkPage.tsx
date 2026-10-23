@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
 import { ArrowUpRight, Briefcase, MapPin } from 'lucide-react';
 import { experiences, impactItems, type ExperienceItem } from '../data/portfolio';
 import { arriveAt } from '../lib/arrival';
@@ -77,21 +78,25 @@ export function WorkPage() {
 }
 
 /** Facts on the left, everything done there on the right. Hovering the row
- *  lights its bar in the career bar and its tools in Stack. */
+ *  lights its bar in the career bar and its tools in Stack — nothing dims.
+ *  As the bullets are read they ink in, the line between the two boxes fills
+ *  down, and once the role is fully read its tools light up one by one. */
 function RoleRow({ job, index }: { job: ExperienceItem; index: number }) {
-  const { setFocus, litCompanies } = useLinkedHover();
+  const { setFocus } = useLinkedHover();
   const { range, duration } = describePeriod(job.period);
   const logo = LOGOS[job.company];
-  const dim = litCompanies && !litCompanies.has(job.company);
+  const rail = useRef<HTMLSpanElement>(null);
+  const [read, setRead] = useState(0);
+  const done = read === job.details.length;
 
   return (
     <Row
       cols="2fr 3fr"
       className="bx-role-row"
-      data-state={dim ? 'dim' : undefined}
       onPointerEnter={() => setFocus({ company: job.company })}
       onPointerLeave={() => setFocus(null)}
     >
+      <span ref={rail} className="bx-ink-rail" aria-hidden="true" />
       <Box id={roleId(job.company)} index={index} label={job.period} className="bx-role-facts">
         <span className="gx-company-logo bx-role-logo">
           {logo ? <img src={logo} alt="" /> : <Briefcase aria-hidden="true" />}
@@ -135,16 +140,21 @@ function RoleRow({ job, index }: { job: ExperienceItem; index: number }) {
         )}
       </Box>
 
-      <Box index={index + 1} label="What I did" aside={<span>{job.details.length}</span>} className="bx-role-work">
-        <ul className="gx-bullets bx-role-points">
-          {job.details.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
+      <Box
+        index={index + 1}
+        label="What I did"
+        aside={
+          <span className="gx-tabular" aria-label={`${job.details.length} points`}>
+            {read}/{job.details.length}
+          </span>
+        }
+        className="bx-role-work"
+      >
+        <InkPoints points={job.details} rail={rail} onRead={setRead} />
         {job.technologies && (
-          <ul className="bx-role-tools" aria-label="Tools used">
-            {job.technologies.map((t) => (
-              <li key={t.name}>
+          <ul className="bx-role-tools" aria-label="Tools used" data-done={done || undefined}>
+            {job.technologies.map((t, i) => (
+              <li key={t.name} style={{ '--i': i } as CSSProperties}>
                 <img
                   src={t.icon}
                   alt=""
@@ -163,5 +173,60 @@ function RoleRow({ job, index }: { job: ExperienceItem; index: number }) {
         )}
       </Box>
     </Row>
+  );
+}
+
+/** "Ink as you read" (Oct 23): each bullet darkens word by word as the list
+ *  scrolls up the screen, so the role being read is always the crispest thing
+ *  on the page. Words are lit straight in the DOM, so scrolling never
+ *  re-renders; React only hears how many bullets are fully read. */
+function InkPoints({
+  points,
+  rail,
+  onRead,
+}: {
+  points: string[];
+  rail: RefObject<HTMLSpanElement | null>;
+  onRead: (read: number) => void;
+}) {
+  const ref = useRef<HTMLUListElement>(null);
+  const still = useReducedMotion();
+  const lit = useRef(0);
+  const read = useRef(-1);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.85', 'end 0.55'] });
+  // Index just past each bullet's last word, to count bullets fully read.
+  const ends = points.reduce<number[]>((acc, p) => [...acc, (acc[acc.length - 1] ?? 0) + p.split(' ').length], []);
+
+  const paint = (progress: number) => {
+    const words = ref.current?.querySelectorAll<HTMLElement>('.bx-ink-w');
+    if (!words) return;
+    const p = still ? 1 : progress;
+    const k = Math.round(p * words.length);
+    for (let i = Math.min(k, lit.current); i < Math.max(k, lit.current); i++) words[i].toggleAttribute('data-lit', i < k);
+    lit.current = k;
+    if (rail.current) rail.current.style.transform = `scaleY(${p})`;
+    const done = ends.filter((end) => end <= k).length;
+    if (done !== read.current) {
+      read.current = done;
+      onRead(done);
+    }
+  };
+
+  useMotionValueEvent(scrollYProgress, 'change', paint);
+  useEffect(() => paint(scrollYProgress.get()), []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <ul ref={ref} className="gx-bullets bx-role-points">
+      {points.map((point) => (
+        <li key={point}>
+          {point.split(' ').map((word, i) => (
+            <Fragment key={i}>
+              {i > 0 && ' '}
+              <span className="bx-ink-w">{word}</span>
+            </Fragment>
+          ))}
+        </li>
+      ))}
+    </ul>
   );
 }

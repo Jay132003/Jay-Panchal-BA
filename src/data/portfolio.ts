@@ -203,6 +203,28 @@ export const capabilities: CapabilityItem[] = [
   },
 ];
 
+/** One line of proof per skill, shown when it's hovered (drafted Oct 23 from
+ *  the resume bullets — Jay to edit). */
+export const skillProof: Record<string, string> = {
+  'Requirement Gathering': 'Led discovery for 100+ automation modules at Neome.ai.',
+  'Process Mapping': 'Mapped Leads → Visits → Quotations → Approvals before a single rule was built.',
+  'BRD / FRD': 'Wrote the BRDs and FRDs that engineering and QA build from.',
+  'User Stories': 'Turned client asks into stories the dev team could pick up and ship.',
+  'Acceptance Criteria': 'Set the pass/fail lines for the UAT cycles I owned through go-live.',
+  'Root Cause Analysis': 'Traced UAT blockers back to the rule or data that caused them.',
+  'Change Management': 'Moved 100+ users across industries from manual work to automated flows.',
+  'Workflow Automation': 'Automated 70% of manual operations with validations, escalations and triggers.',
+  'Rule Engine Design': 'Designed workflow rules, reminders and event-driven triggers.',
+  'System Configuration': 'Configured enterprise modules — Leads, Visits, Quotations, Dashboards.',
+  'Logic Building': 'Built standardized logic templates reused across every module.',
+  'Optimization': 'Cut implementation time by 50% with reusable components.',
+  'Integrations': 'Connected modules and data across systems — REST APIs since Brainybeam.',
+  'Stakeholder Management': 'Kept business, engineering and QA aligned from discovery to release.',
+  'Client Communication': 'Ran requirement calls and go-lives directly with clients.',
+  'Problem Solving': 'Cleared blockers during UAT and release planning across teams.',
+  'Critical Thinking': 'Questioned the ask until the real need was clear — then wrote it down.',
+};
+
 export const education = {
   school: 'Gujarat Technological University',
   degree: 'Bachelor of Engineering (BE)',

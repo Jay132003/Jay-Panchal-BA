@@ -30,7 +30,7 @@ export function Odometer({ value, start, delay }: { value: string; start: boolea
   const still = useReducedMotion();
   const readyAt = useRef<number | null>(null);
   const [rollDelay, setRollDelay] = useState<number | null>(null);
-  const match = value.match(/^(\d+)(.*)$/);
+  const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
 
   useEffect(() => {
     if (start && readyAt.current == null) readyAt.current = performance.now();
@@ -57,6 +57,7 @@ export function Odometer({ value, start, delay }: { value: string; start: boolea
   return (
     <span ref={ref} className="bx-metric-value bx-odo" role="img" aria-label={value}>
       {digits.map((d, i) => {
+        if (d === '.') return <span key={i} className="bx-odo-dot" aria-hidden="true">.</span>;
         const turns = digits.length - i; // like a real counter, the last digit spins most
         const steps = turns * 10 + Number(d);
         return (

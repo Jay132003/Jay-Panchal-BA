@@ -3,13 +3,11 @@ import { Connect, QuickFacts } from './Overview';
 import About from './About';
 import Impact from './Impact';
 import Playlists from './Playlists';
-import Experience from './Experience';
-import { StackBox } from './Stack';
+import LiveWiringRow from './LiveWiring';
 import Skills, { Education } from './Skills';
 import SignOff from './SignOff';
 import { ActivityBox } from './Activity';
 import { Bento, Row } from './Bento';
-import { LinkedHoverProvider } from './LinkedHover';
 
 type HomePageProps = {
   onCopyEmail: () => void;
@@ -47,12 +45,7 @@ export default function HomePage({ onCopyEmail, ready, revealDelay, nameFromIntr
             <Row>
               <Playlists />
             </Row>
-            <LinkedHoverProvider>
-              <Row cols="11fr 9fr">
-                <Experience />
-                <StackBox />
-              </Row>
-            </LinkedHoverProvider>
+            <LiveWiringRow />
             <Row cols="1fr 3fr">
               <Education />
               <Skills />

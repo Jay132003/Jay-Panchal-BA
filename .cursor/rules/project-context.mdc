@@ -71,16 +71,23 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      (`src/lib/coverFlight.ts`, rAF-driven so it lands on the platter's live angle; the record shows
      bare vinyl via `data-incoming` until it lands; skipped under reduced motion or when the record is
      off-screen).
-  5. Experience (11fr) | Stack (9fr) — redesigned Oct 18. `Experience.tsx`: a **career bar** (one
-     lane per role on a shared year axis, bars draw in chronologically, green "Now" pulse) + one
-     line per role (logo, company, role · duration, `headline` from `portfolio.ts`); each row links
-     to the Work page — no accordions. `StackBox` in `Stack.tsx`: 16 logos in a 4×4 grid of
-     hairline cells that run into the box's own lines; grey until hovered (colour by default on
-     touch screens). **Linked hover** (`LinkedHover.tsx`): hover a role → its tools light up in
-     Stack and the rest dim; hover a tool → the roles that used it light up (role `technologies`,
-     `MySQL` aliased to `SQL`).
-  6. Education (1fr, CGPA as big number) | Skills (3fr, 3 groups in 3 columns) — `Skills.tsx`. The
-     "Tools & Technology" skill group was dropped Oct 18 (it repeated Stack).
+  5. Experience (11fr) | Stack (9fr) — `LiveWiring.tsx` (`lw-*` in `bento.css`), Oct 23. Jay's rule
+     from that round: **hover only adds — it never dims anything else** (the old fades looked dull,
+     and a faded row let the cursor spotlight show through as a dark smudge). Career bar + one line per
+     role (logo, company, role · duration, `headline`) | 16 logos in a 4×4 hairline grid. **Hover a
+     role → its tools simply turn to colour in Stack** (plus a light cell tint) — nothing else. Jay
+     tried wires routed along the hairlines and then a ripple ring and found both "too much"; keep
+     this plain. Hover a tool → the roles that used it get an ink underline. One highlight springs
+     between role rows (motion `layoutId`); the Stack count rolls to "12 of 16 used"; scrubbing the
+     career bar shows a playhead (month · company, the years step aside) and lights that role's tools.
+     Phones (`hover: none`) get a one-time tour through the roles.
+  6. Education (1fr) | Skills (3fr) — **"How I work"** (Oct 23), `Skills.tsx` (`hw-*`). Education =
+     8 semester squares that fill in, then the CGPA rolls in on `Odometer` (now handles decimals) while
+     a gauge draws to it. Skills = three stages (Understand → Build → Land it) on a rail a beam runs
+     along; stage dots fill as it arrives, skills tick on like a checklist (check draws, text decodes
+     via `Scramble`). Hovering a skill shows its proof line (`skillProof` in `portfolio.ts`, drafted
+     from the resume — Jay may edit) in a fixed-height footer, so the row never changes height; phones
+     cycle through them. ≤900px the stages stack and the rail runs down their left edge.
   7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "10 — Activity".
      A year of squares from a **generated pattern** (Jay rarely uses GitHub and asked for one, Oct 17):
      deterministic per date, natural weekday/weekend/season rhythm, GitHub-style month labels and a
@@ -97,7 +104,10 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
   with a large `CareerBar` (company + duration over each bar; click a bar → `arriveAt(roleId(company))`
   jumps to that role with the trace) · Impact as three boxes (`Odometer`) · one `RoleRow` per role
   (`2fr 3fr`: sticky facts box with logo/role/location/dates/links | every bullet + the tools used) —
-  nothing opens or closes · `StackBox wide` (8 columns) · `NextPage` → About · `SignOff`. The whole page is
+  nothing opens or closes. **Ink as you read** (Oct 23, `InkPoints`): bullets start pale and darken word by word with
+  scroll (`useScroll`, words lit straight in the DOM), the hairline between the two boxes fills down
+  (`.bx-ink-rail`), the label counts bullets read ("2/6"), and when the role is fully read its tool
+  chips light up one by one. No hover dimming · `StackBox wide` (8 columns) · `NextPage` → About · `SignOff`. The whole page is
   inside `LinkedHoverProvider`, so hovering a role row lights its career bar and its tools in Stack.
 - **About page** (`src/components/about/AboutPage.tsx`, `#about`) — photo + intro row mirroring the landing
   profile row (3:4 photo, opening line up top, "Yep, That's me — Jay Panchal." at the foot) · the story in
@@ -233,7 +243,8 @@ Gujju Rocks (`6JmjJn7Ex6aZ3TppK4yMf2`, 54).
 
 ## Status
 
-Bento landing merged to `main` (PR #1). Oct 18 (not committed yet): floating dock removed, back-to-top,
+Bento landing merged to `main` (PR #1). Oct 18: floating dock removed, back-to-top,
 header jump fixes, tracklist band + cover flight, Experience career bar, Stack logo grid, linked hover,
 odometer, arrival trace, phone header links, and Work + About rebuilt on the grid (old column pieces
-deleted). Possible next: prune the dead `gx-*` CSS in `home.css`. Commit only when Jay asks.
+deleted) — merged as PR #2. Oct 23 (uncommitted until Jay commits): Live wiring, How I work, Ink as you read; all dimming removed.
+Possible next: prune the dead `gx-*` CSS (and `.bx-sub`) in `home.css`. Jay commits and pushes himself: leave changes uncommitted.
