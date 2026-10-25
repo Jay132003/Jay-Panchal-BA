@@ -2,6 +2,7 @@ import { IconBrandLinkedin, IconFileCv, IconMail, IconPhone } from '@tabler/icon
 import { profile } from '../../data/portfolio';
 import { getDailyQuote } from '../../data/quotes';
 import { BoxLabel } from './Bento';
+import SignedOff from './SignedOff';
 
 const LINKS = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/jjp01/', Icon: IconBrandLinkedin },
@@ -10,12 +11,11 @@ const LINKS = [
   { label: 'Resume', href: profile.resumePath, Icon: IconFileCv },
 ] as const;
 
-/** Last row of every page: the quote of the day, contact links and credits.
+/** Last row of every page: the quote of the day, contact links and Jay's signature.
  *  Replaces the old footer (on Work and About too since Oct 18). (The activity squares sit in their own
  *  row above it since Oct 17.) */
 export default function SignOff({ index = 11 }: { index?: number }) {
   const { text, author, source } = getDailyQuote();
-  const year = new Date().getFullYear();
 
   return (
     <footer className="bx-box bx-signoff" aria-label="Sign-off">
@@ -44,10 +44,7 @@ export default function SignOff({ index = 11 }: { index?: number }) {
               );
             })}
           </div>
-          <p className="bx-credits">
-            Designed &amp; built by <strong>{profile.name}</strong>. Set in Geist. © {year}
-            <span className="bx-credits-dim">Inspired by chanhdai.com &amp; marijanapav.com</span>
-          </p>
+          <SignedOff name={profile.name} />
         </div>
       </div>
     </footer>

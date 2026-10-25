@@ -4,6 +4,7 @@ export const profile = {
   role: 'Business Analyst · Solutions Engineer',
   email: 'panchalj481@gmail.com',
   phone: '+919624287628',
+  instagram: 'https://www.instagram.com/offx.jayyy/',
   bio: 'A Business Analyst & Solutions Engineer crafting AI-driven workflows that turn complex operations into calm, scalable systems for the people who use them.',
   status: 'Where business meets effortless automation.',
   resumePath: '/assets/jay-panchal-resume.pdf',

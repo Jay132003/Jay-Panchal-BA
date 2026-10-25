@@ -68,7 +68,7 @@ const tipText = (d: Date) =>
 /** Row of its own on the landing grid (split from the sign-off, Oct 17). */
 export function ActivityBox() {
   return (
-    <Box index={10} label="Activity" className="bx-activity">
+    <Box index={13} label="Activity" className="bx-activity">
       <Activity />
     </Box>
   );

@@ -6,6 +6,9 @@ import Playlists from './Playlists';
 import LiveWiringRow from './LiveWiring';
 import Skills, { Education } from './Skills';
 import SignOff from './SignOff';
+import CaseStudy from './CaseStudy';
+import Gallery from './Gallery';
+import Friends from './Friends';
 import { ActivityBox } from './Activity';
 import { Bento, Row } from './Bento';
 
@@ -51,10 +54,17 @@ export default function HomePage({ onCopyEmail, ready, revealDelay, nameFromIntr
               <Skills />
             </Row>
             <Row>
+              <CaseStudy />
+            </Row>
+            <Row cols="7fr 5fr">
+              <Gallery />
+              <Friends />
+            </Row>
+            <Row>
               <ActivityBox />
             </Row>
             <Row>
-              <SignOff />
+              <SignOff index={14} />
             </Row>
           </>
         )}

@@ -8,18 +8,25 @@ import Toast from './components/Toast';
 import ScriptsIntro from './components/intro/ScriptsIntro';
 import { AboutPage } from './components/about/AboutPage';
 import { WorkPage } from './components/WorkPage';
+import { CaseStudiesPage, FriendsPage, GalleryPage } from './components/LifePages';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { useActiveSection } from './hooks/useActiveSection';
 import { arriveAt } from './lib/arrival';
 
-type Page = 'home' | 'about' | 'work';
+type Page = 'home' | 'about' | 'work' | 'cases' | 'gallery' | 'friends';
+
+/** Hash of every full page other than home. */
+const SUBPAGES: Record<string, Page> = {
+  '#about': 'about',
+  '#work-page': 'work',
+  '#case-studies': 'cases',
+  '#gallery-page': 'gallery',
+  '#friends-page': 'friends',
+};
 
 function getPage(): Page {
-  const hash = window.location.hash;
-  if (hash === '#about') return 'about';
-  if (hash === '#work-page') return 'work';
-  return 'home';
+  return SUBPAGES[window.location.hash] ?? 'home';
 }
 
 const pageEase = [0.22, 1, 0.36, 1] as const;
@@ -65,7 +72,7 @@ export default function App() {
       const oldHash = new URL(e.oldURL).hash;
       const targetId = window.location.hash.replace('#', '');
       setPage(next);
-      const leftSubpage = oldHash === '#about' || oldHash === '#work-page';
+      const leftSubpage = oldHash in SUBPAGES;
 
       if (next === 'home') {
         const toSection = Boolean(targetId) && targetId !== 'home';
@@ -166,6 +173,16 @@ export default function App() {
             transition={{ duration: 0.25, ease: pageEase }}
           >
             <WorkPage />
+          </motion.div>
+        ) : page === 'cases' || page === 'gallery' || page === 'friends' ? (
+          <motion.div
+            key={page}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: pageEase }}
+          >
+            {page === 'cases' ? <CaseStudiesPage /> : page === 'gallery' ? <GalleryPage /> : <FriendsPage />}
           </motion.div>
         ) : (
           <motion.div

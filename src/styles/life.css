@@ -1,0 +1,314 @@
+/* Boxes 10–12 on the landing page and their pages (Oct 25): case study, gallery,
+   friends — "Coming soon" stand-ins for now (Soon.tsx). */
+
+/* ── 10 Case study ─────────────────────────────────────────── */
+.cs-title {
+  max-width: 24ch;
+  margin: 0 0 22px;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+/* The canvas the workflow sorts itself out on: a dotted board, like a flow builder */
+.cs-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--text) 13%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--bx-tint);
+}
+.cs-state {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-family: var(--font-geist-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cs-wires { position: absolute; inset: 0; overflow: visible; }
+.cs-wire {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text) 32%, transparent);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 5;
+  transition: stroke 700ms ease, stroke-dasharray 900ms ease;
+}
+.cs-chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  translate: -50% -50%;
+}
+.cs-chip-in {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--edge);
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+  white-space: nowrap;
+  transition: border-color 600ms ease;
+}
+/* The mess fidgets a little until it's sorted */
+.cs-stage:not([data-solved]) .cs-chip-in {
+  animation: cs-fidget 2.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.55s);
+}
+@keyframes cs-fidget {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to   { transform: translate(1.5px, -2px) rotate(1.2deg); }
+}
+.cs-chip-before { padding: 7px 12px; font-family: var(--font-geist-mono); font-size: 12px; color: var(--muted); }
+
+/* ── 11 Gallery ────────────────────────────────────────────── */
+.gl-stage {
+  position: relative;
+  /* a fixed window: the columns are far taller and only slide past it */
+  height: 600px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  overflow: hidden;
+  /* the columns fade in and out at the edges, so the reel feels endless */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+}
+.gl-col { display: flex; flex-direction: column; gap: 10px; will-change: transform; }
+.gl-shot {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--edge);
+}
+.gl-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 1.1s cubic-bezier(.16, 1, .3, 1);
+}
+.gl-shot figcaption {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 3px 7px;
+  background: rgba(10, 10, 10, .5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-geist-mono);
+  font-size: 10.5px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 400ms ease, transform 500ms cubic-bezier(.16, 1, .3, 1);
+}
+.gl-shot:hover img { transform: scale(1.06); }
+.gl-shot:hover figcaption { opacity: 1; transform: none; }
+
+/* ── 12 Friends (Aceternity's animated testimonials, restyled) ── */
+.at { display: flex; flex-direction: column; gap: 26px; height: 100%; }
+.at-stack { position: relative; flex: 1; min-height: 280px; margin-top: 6px; perspective: 1000px; }
+.at-card { position: absolute; inset: 0; transform-origin: bottom center; }
+.at-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 14px 30px -16px rgba(0, 0, 0, .45);
+  user-select: none;
+}
+.at-copy { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+.at-name { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.035em; }
+.at-meta { margin: 4px 0 0; font-family: var(--font-geist-mono); font-size: 11.5px; color: var(--muted); }
+.at-quote {
+  margin: 14px 0 0;
+  /* three lines reserved, so a short memory never shrinks the row */
+  min-height: calc(1.6em * 3);
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.at-quote > span { display: inline-block; }
+.at-nav { position: relative; display: flex; align-items: center; gap: 8px; padding-top: 14px; }
+.at-nav::before { content: ''; position: absolute; inset: 0 0 auto; height: 1px; background: var(--edge); }
+.at-nav button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--edge);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 200ms ease;
+}
+.at-nav button svg { width: 16px; height: 16px; transition: transform 300ms ease; }
+.at-nav button:hover { border-color: var(--text); }
+.at-nav button:first-child:hover svg { transform: rotate(12deg); }
+.at-nav button:nth-child(2):hover svg { transform: rotate(-12deg); }
+.at-count { margin-left: auto; font-family: var(--font-geist-mono); font-size: 12px; color: var(--muted); }
+/* Countdown to the next card, along the top hairline */
+.at-timer {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--text);
+  transform-origin: left;
+  animation: at-timer var(--at-interval) linear forwards;
+}
+.at-timer[data-paused] { animation-play-state: paused; }
+@keyframes at-timer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (max-width: 720px) {
+  .gl-stage { height: 460px; gap: 6px; }
+  .gl-col { gap: 6px; }
+  .at-stack { flex: none; height: 260px; min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-stage .cs-chip-in { animation: none !important; }
+  .cs-wire, .gl-shot img { transition-duration: 1ms !important; transition-delay: 0s !important; }
+  .soon-dot, .soon-frame { animation: none !important; }
+}
+
+/* ── Coming soon ───────────────────────────────────────────── */
+.soon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 9px 4px 8px;
+  border: 1px solid var(--edge);
+  background: var(--bg);
+  font-family: var(--font-geist-mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+.soon-dot {
+  --c: #36b86d;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 50%, transparent);
+  animation: soon-breathe 2.2s ease-in-out infinite;
+}
+.soon-badge[data-tone="red"] .soon-dot { --c: #e5484d; }
+@keyframes soon-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 50%, transparent); }
+  50%      { box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 0%, transparent); }
+}
+.soon-title { margin: 14px 0 0; font-size: 20px; font-weight: 600; letter-spacing: -.03em; line-height: 1.25; text-wrap: balance; }
+.soon-note { margin: 8px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted); text-wrap: pretty; }
+.bx-case .soon-note { margin-top: 14px; }
+.soon-board .cs-state { top: 9px; left: 10px; }
+.soon-board .cs-state .soon-badge { letter-spacing: .08em; }
+
+/* Gallery: empty frames, each slowly "developing" — a soft sheen drifts through
+   them on its own beat — under a darkroom-red veil */
+.soon-reel { position: relative; }
+.soon-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 3px;
+  background:
+    linear-gradient(115deg, transparent 30%, color-mix(in srgb, var(--bg) 70%, transparent) 50%, transparent 70%) 0 0 / 300% 100%,
+    color-mix(in srgb, var(--text) calc(6% + var(--k) * 3%), var(--bg));
+  animation: soon-develop 5.5s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+.soon-frame[data-wide] { aspect-ratio: 4 / 3; }
+@keyframes soon-develop {
+  from { background-position: 120% 0, 0 0; }
+  to   { background-position: -120% 0, 0 0; }
+}
+.soon-frame-no {
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  font-family: var(--font-geist-mono);
+  font-size: 10px;
+  color: color-mix(in srgb, var(--text) 35%, transparent);
+}
+.soon-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  /* a soft darkroom glow that clears a calm patch for the words */
+  background:
+    radial-gradient(ellipse 34% 22% at 50% 50%, var(--bg) 45%, transparent 100%),
+    radial-gradient(closest-side, color-mix(in srgb, #e5484d 10%, transparent), transparent);
+}
+.soon-veil p { margin: 0; max-width: 26ch; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+/* Friends: a pile of blank cards that keeps dealing itself */
+.soon-friends { display: flex; flex-direction: column; gap: 28px; height: 100%; }
+.soon-friends > div:last-child { margin-top: auto; }
+.soon-deck { position: relative; flex: 1; min-height: 280px; margin: 6px 10% 0; }
+.soon-card {
+  position: absolute;
+  inset: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, .35);
+  transform-origin: bottom center;
+}
+.soon-card-photo {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--text) 12%, transparent) 1px, transparent 1.5px) 0 0 / 12px 12px,
+    var(--bx-tint);
+  font-family: var(--font-geist-mono);
+  font-size: 44px;
+  color: color-mix(in srgb, var(--text) 22%, transparent);
+}
+.soon-card-lines { display: flex; flex-direction: column; gap: 7px; }
+.soon-line { height: 7px; width: 82%; border-radius: 4px; background: color-mix(in srgb, var(--text) 8%, transparent); }
+.soon-line--name { height: 10px; width: 46%; background: color-mix(in srgb, var(--text) 14%, transparent); }
+.soon-line--short { width: 58%; }
+.soon-card-handle { margin-top: 2px; font-family: var(--font-geist-mono); font-size: 11px; color: var(--muted); }
+
+/* ── The three pages ───────────────────────────────────────── */
+.soon-page-stage .bx-box-in { gap: 0; }
+.soon-page-friends { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 40px; align-items: center; }
+.soon-page-friends .soon-deck { height: 380px; flex: none; margin: 0 24px; }
+.soon-list { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.soon-list li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--edge);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.soon-list li span:first-child { flex: none; width: 22px; font-family: var(--font-geist-mono); font-size: 11px; line-height: 21px; color: var(--text); }
+@media (max-width: 720px) {
+  .soon-page-friends { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .soon-page-friends .soon-deck { height: 300px; }
+}

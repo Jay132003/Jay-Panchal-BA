@@ -396,13 +396,63 @@
   flex-direction: column;
 }
 .bx-links li + li { border-top: 1px solid var(--edge); }
+/* Hover (Oct 25): a soft wash of the row's brand colour sweeps in from the left
+   and leaves to the right, and the label rolls up letter by letter while the
+   punchline rolls in beneath it. Transforms only, on a long ease-out. */
 .bx-link {
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 0;
+  margin: 0 -10px;
+  padding: 11px 10px;
 }
-.bx-links li:last-child .bx-link { padding-bottom: 0; }
+.bx-links li:last-child .bx-link { padding-bottom: 2px; }
+.bx-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--tint) 7%, transparent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 650ms var(--ease-out);
+}
+html.dark .bx-link::before { background: color-mix(in srgb, var(--tint) 13%, transparent); }
+.bx-link:hover::before,
+.bx-link:focus-visible::before { transform: scaleX(1); transform-origin: left; }
+.bx-link:focus-visible { outline: none; }
+
+.bx-roll {
+  display: grid;
+  overflow: hidden;
+  /* room for descenders inside the mask */
+  padding-bottom: .1em;
+  margin-bottom: -.1em;
+}
+.bx-roll-line { grid-area: 1 / 1; white-space: nowrap; }
+.bx-roll-line > span {
+  display: inline-block;
+  transform: translate3d(0, 0, 0);
+  /* leaving: a quick, tight ripple back */
+  transition: transform 450ms var(--ease-out) calc(var(--i) * 6ms);
+}
+.bx-roll-quip > span { transform: translate3d(0, 115%, 0); }
+.bx-link:hover .bx-roll-line > span,
+.bx-link:focus-visible .bx-roll-line > span {
+  transform: translate3d(0, -115%, 0);
+  transition: transform 700ms var(--ease-out) calc(var(--i) * 16ms);
+}
+.bx-link:hover .bx-roll-quip > span,
+.bx-link:focus-visible .bx-roll-quip > span {
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(80ms + var(--i) * 11ms);
+}
+
+.bx-link-icon { transition: transform 650ms var(--ease-out); }
+.bx-link:hover .bx-link-icon { transform: translateX(2px) rotate(-6deg); }
 .bx-link-icon { flex: none; display: grid; color: var(--tint); }
 .bx-link-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .bx-link-label { font-size: 15px; font-weight: 500; line-height: 1.3; }
@@ -419,9 +469,10 @@
   width: 16px;
   height: 16px;
   color: var(--muted);
-  transition: transform 200ms ease, color 150ms ease;
+  transition: transform 650ms var(--ease-out), color 300ms ease;
 }
-.bx-link:hover .bx-link-arrow { color: var(--text); transform: translate(2px, -2px); }
+/* The arrow swings to point straight at you, in the row's colour */
+.bx-link:hover .bx-link-arrow { color: var(--tint); transform: translateX(2px) rotate(45deg); }
 
 /* Row 4 — a compact, minimal turntable. Jay found the grey stage and the
    big centred deck too loud: here it sits on the plain box background as one
@@ -844,7 +895,13 @@ html.dark .bx-tool:has([src*="openai"], [src*="nextjs"], [src$="/notion"]) { --i
 @media (max-width: 720px) {
   .act-inner { min-width: calc(53 * 10px + 52 * 3px); }
 }
+/* Touch screens can't hover, so the ink copy never shows */
+@media (hover: none) {
+  .bx-link::before, .bx-roll-quip { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .bx-link::before, .bx-roll-line > span, .bx-link-icon, .bx-link-arrow { transition-duration: 1ms !important; transition-delay: 0s !important; }
   .act-cell { transition: none; }
 }
 .bx-quote {
@@ -882,8 +939,32 @@ html.dark .bx-tool:has([src*="openai"], [src*="nextjs"], [src$="/notion"]) { --i
   gap: 8px 16px;
 }
 .bx-signoff .gx-footer-links { margin: 0 0 0 -8px; }
-.bx-credits { margin: 0; font-size: 13px; color: var(--muted); }
-.bx-credits strong { color: var(--text); font-weight: 500; }
+/* Jay's signature writes itself on in place of a credits line (Oct 25) */
+.bx-signed { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.bx-signed-pen {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.bx-signed-pen svg {
+  display: block;
+  width: 190px;
+  height: auto;
+  aspect-ratio: 1632 / 214; /* SIGNATURE_VIEWBOX */
+  overflow: visible;
+}
+.bx-signed-pen path { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.bx-signed-pen:focus-visible { outline: 1px solid var(--bx-hot); outline-offset: 6px; }
+.bx-signed-note {
+  margin: 0;
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
 
 /* ── Work and About on the grid (Oct 18) ───────────────────── */
 .bx-page-hero .bx-box-in { padding-bottom: 28px; }
@@ -1037,9 +1118,8 @@ html.dark .bx-role-tools[data-done] .gx-chip-icon:is([src*="openai"], [src*="nex
 .bx-next-title svg { width: .8em; height: .8em; transition: transform 350ms cubic-bezier(.34, 1.4, .64, 1); }
 .bx-next:hover .bx-next-title svg { transform: translateX(10px); }
 .bx-next-note { margin-top: 6px; font-size: 14px; color: var(--muted); }
-.bx-credits-dim { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); opacity: .8; }
 @media (min-width: 721px) {
-  .bx-signoff .bx-credits { text-align: right; }
+  .bx-signed { align-items: flex-end; }
 }
 
 /* About: photo + intro, mirroring the landing profile row */
@@ -1194,11 +1274,12 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
   .bx-story p { font-size: 15.5px; line-height: 1.75; }
   .bx-role-name { font-size: 19px; }
 
-  /* Connect — a row of three icons */
+  /* Connect — a row of five icons */
   .bx-links { flex-direction: row; }
-  .bx-links li { flex: 1; }
+  .bx-links li { flex: 1; min-width: 0; }
   .bx-links li + li { border-top: 0; border-left: 1px solid var(--edge); }
-  .bx-link { flex-direction: column; gap: 6px; padding: 4px 0 !important; }
+  .bx-link { flex-direction: column; gap: 6px; margin: 0; padding: 4px 0 !important; }
+  .bx-link::before, .bx-roll-quip { display: none; }
   .bx-link-text { align-items: center; }
   .bx-link-label { font-size: 12.5px; font-weight: 400; color: var(--muted); }
   .bx-link-handle,

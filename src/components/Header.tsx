@@ -9,7 +9,7 @@ type HeaderProps = {
   onToggleTheme: () => void;
   onOpenPalette: () => void;
   activeSection?: string;
-  currentPage?: 'home' | 'about' | 'work';
+  currentPage?: 'home' | 'about' | 'work' | 'cases' | 'gallery' | 'friends';
 };
 
 // The JP monogram as a 7×5 pixel mark (same glyphs as the cover, smaller).

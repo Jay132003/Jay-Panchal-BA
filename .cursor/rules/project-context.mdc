@@ -59,7 +59,11 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
   1. Profile — square photo cell flush to the lines (`ProfileHeader`) + name cell. Photo stays the
      original colour photo (Jay tried monochrome + close crop on Oct 17 and went back — keep it)
   2. Quick facts (2fr) | About (3fr)   — `Overview.tsx` (`QuickFacts`, `Connect`), `About.tsx`
-  3. Impact (13fr, count-up numbers) | Connect (7fr) — `Impact.tsx`
+  3. Impact (13fr, count-up numbers) | Connect (7fr) — `Impact.tsx`. Connect (Oct 25): Email, Phone,
+     LinkedIn, Instagram (@offx.jayyy), Resume, in that order. Hovering a row sweeps a soft wash of its brand
+     tint across it (in from the left, out to the right) while the label rolls up letter by letter and the
+     punchline (`LINKS[].quip` in Overview.tsx) rolls in beneath; the arrow swings to → in the tint. Jay
+     rejected a solid black block (too harsh) — keep it soft. Quips ≤ ~35 chars. Off on touch.
   4. On rotation turntable, full width — `Playlists.tsx`. Inside the grid it's a **compact, minimal row**
      (Oct 17, Jay: the grey stage and big deck were "too loud"): plain box background (no grey stage, no
      album-colour wash), 176px deck · song + hairline player · the two other records small. All via
@@ -88,16 +92,34 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      via `Scramble`). Hovering a skill shows its proof line (`skillProof` in `portfolio.ts`, drafted
      from the resume — Jay may edit) in a fixed-height footer, so the row never changes height; phones
      cycle through them. ≤900px the stages stack and the rail runs down their left edge.
-  7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "10 — Activity".
+  6b. Case study, full width — `CaseStudy.tsx`, "10 — Case study". **Coming soon** (Oct 25): Jay is
+     writing a different case study (the first draft — a Neome workflow that untangled itself — was
+     dropped). Teaser = `UntanglingBoard` from `Soon.tsx`: research pieces (Notes, Interviews…) on a
+     dotted board, drifting between three arrangements on tangled wires.
+  6c. Gallery (7fr) | Friends (5fr) — "11 — Gallery", "12 — Friends". Both **coming soon** until Jay
+     sends content; they switch to the real thing on their own once `gallery` / `friends` in
+     `src/data/life.ts` have entries. Gallery teaser `DevelopingReel`: empty frames "developing" under a
+     darkroom-red veil; real `GalleryReel`: three photo columns drifting at different speeds with page
+     scroll (motion `useScroll` + `useSpring`, no Lenis — it would hijack the page's scrolling). Friends
+     teaser `CardDeck`: blank cards (photo slot, name/story lines, @coming.soon) that keep dealing
+     themselves; real version = Aceternity's Animated Testimonials, hand-added at
+     `src/components/ui/animated-testimonials.tsx` (no shadcn here), restyled; each friend = photo,
+     name, Instagram (linked) and one little story (`FRIEND_CARDS` in `Friends.tsx`).
+     All three boxes have **"View all →"** to their own pages (`LifePages.tsx`, hashes `#case-studies`,
+     `#gallery-page`, `#friends-page`, listed in `SUBPAGES` in `App.tsx` and in `main.tsx`): title box ·
+     big teaser · Next (Case studies → Gallery → Friends → Home) · sign-off. Styles `cs-*`, `gl-*`,
+     `at-*`, `soon-*` in `src/styles/life.css`.
+  7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "13 — Activity".
      A year of squares from a **generated pattern** (Jay rarely uses GitHub and asked for one, Oct 17):
      deterministic per date, natural weekday/weekend/season rhythm, GitHub-style month labels and a
      Less→More legend. Hovering a square shows a box with the day and date only ("Wednesday · 1 July
      2026") and leaves a fading trail. Deliberately **no count, source or "GitHub" title**, so it never
      presents itself as real GitHub stats (Jay asked for a GitHub title; offered real data via his
      username instead). On phones it scrolls sideways, kept at the latest months.
-  8. Sign-off, full width — `SignOff.tsx`, label "11 — Sign-off": quote of the day + contact + credits
-     (the last row of every page; takes an `index` prop; credits include "Inspired by chanhdai.com &
-     marijanapav.com"). The old pixel "JP" cover (`ProfileCover.tsx`) was removed.
+  8. Sign-off, full width — `SignOff.tsx`, label "14 — Sign-off" on the landing page: quote of the day + contact icons + Jay's
+     signature (the last row of every page; takes an `index` prop). Since Oct 25 there is no credits text
+     (no "inspired by" names, no font credit — Jay's call): `SignedOff.tsx` writes Jay's real signature
+     from `data/signature.ts` when it scrolls into view (click re-signs), over "Signed in Ahmedabad · © year". The old pixel "JP" cover (`ProfileCover.tsx`) was removed.
   Rows 1–3 (`.bx-hero`) fill exactly one desktop screen under the 56px header. Rows 4–7 mount after the
   preloader.
 - **Work page** (`src/components/WorkPage.tsx`, `#work-page`) — on the same grid since Oct 18: title box
@@ -162,7 +184,7 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
   **Dark mode = `html.dark` class** (toggled by `useTheme`, saved in localStorage `jay-theme`) — not the
   OS media query. Every new style needs to work in dark mode (prefer tokens over hex).
 - Mobile: ≤720px every bento box stacks full width (profile row keeps photo beside name; Impact stays 3-up;
-  Connect becomes a row of 3 icons). Tablet tweaks ≤900px. The turntable uses a container query (520px).
+  Connect becomes a row of 5 icons). Tablet tweaks ≤900px. The turntable uses a container query (520px).
 - Respect `prefers-reduced-motion`.
 - Match surrounding code: small focused components, short comments explaining *why*.
 - Process: for big changes Jay wants a grill-me style discussion first (numbered questions with a
