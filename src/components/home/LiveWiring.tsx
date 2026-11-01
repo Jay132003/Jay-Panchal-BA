@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView } from 'motion/react';
-import { ArrowRight, ArrowUpRight, Briefcase } from 'lucide-react';
+import { Briefcase, Maximize2 } from 'lucide-react';
 import { experiences, stackGroups, type ExperienceItem } from '../../data/portfolio';
 import { Box, Row } from './Bento';
-import CareerBar from './CareerBar';
+import ExperiencePanel from './ExperiencePanel';
 import { LinkedHoverProvider, useLinkedHover } from './LinkedHover';
-import { LOGOS, describePeriod, nowIndex, spanOf } from './roles';
+import { LOGOS, describePeriod } from './roles';
 
 /** Role tool names that are spelled differently in the Stack grid. */
 const ALIASES: Record<string, string> = { MySQL: 'SQL' };
@@ -13,14 +13,13 @@ const toolsOf = (company: string) =>
   (experiences.find((j) => j.company === company)?.technologies ?? []).map((t) => ALIASES[t.name] ?? t.name);
 const TOOLS = stackGroups.flatMap((group) => group.items.map((item) => ({ ...item, group: group.title })));
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 type Focus = { company: string } | { tool: string } | null;
 
-/** Row 5 — Experience ↔ Stack (Oct 23). Hover a role and the tools used there
- *  simply turn to colour in Stack; hover a tool and the roles that used it
- *  underline in ink. Kept deliberately plain — Jay found drawn wires and a
- *  ripple "too much" — and nothing dims: hover only adds. */
+/** Row 5 — Experience ↔ Stack. Since Nov 1 Experience is the current role
+ *  (what Jay does there, in four lines) over one quiet line per earlier role;
+ *  "Expand" opens every role in full in a panel over the page, so the row
+ *  never changes height. Hover a role and the tools used there turn to colour;
+ *  hover a tool and the roles that used it underline in ink. Nothing dims. */
 export default function LiveWiringRow() {
   return (
     <LinkedHoverProvider>
@@ -33,8 +32,9 @@ function WiringRow() {
   const rolesRef = useRef<HTMLOListElement>(null);
   const linked = useLinkedHover();
   const [focus, setLocal] = useState<Focus>(null);
+  const [open, setOpen] = useState(false);
 
-  // The career bar reads the shared linked-hover state, so keep both in step.
+  // The Work page's career bar reads the shared linked-hover state, so keep both in step.
   const setFocus = (next: Focus) => {
     setLocal((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     linked.setFocus(next);
@@ -63,32 +63,35 @@ function WiringRow() {
 
   return (
     <Row cols="11fr 9fr" className="lw-wiring" onPointerLeave={() => setFocus(null)}>
-      <Box id="work" index={6} label="Experience" aside={<a href="#work-page" className="bx-aside-link">View all work <ArrowRight aria-hidden="true" /></a>} className="lw-exp">
-        <Playhead onFocus={setFocus} />
-        <ol ref={rolesRef} className="bx-roles lw-roles">
+      <Box
+        id="work"
+        index={5}
+        label="Experience"
+        aside={
+          <button type="button" className="bx-aside-link lw-expand" onClick={() => setOpen(true)} aria-haspopup="dialog">
+            Expand <Maximize2 aria-hidden="true" />
+          </button>
+        }
+        className="lw-exp"
+      >
+        <ol ref={rolesRef} className="lw-roles">
           {experiences.map((job) => (
             <li
               key={job.company}
               data-role={job.company}
+              data-now={job.isCurrent || undefined}
               data-state={litCompanies?.has(job.company) ? 'lit' : undefined}
               onPointerEnter={() => setFocus({ company: job.company })}
               onPointerLeave={() => setFocus(null)}
             >
-              {company === job.company && (
-                <motion.span
-                  layoutId="lw-role-hl"
-                  className="lw-role-hl"
-                  transition={{ type: 'spring', stiffness: 420, damping: 34 }}
-                />
-              )}
-              <RoleLine job={job} />
+              {job.isCurrent ? <NowRole job={job} /> : <PastRole job={job} />}
             </li>
           ))}
         </ol>
       </Box>
 
       <Box
-        index={7}
+        index={6}
         label="Stack"
         aside={
           <AnimatePresence mode="popLayout" initial={false}>
@@ -124,86 +127,62 @@ function WiringRow() {
         </ul>
       </Box>
 
+      <ExperiencePanel open={open} onClose={() => setOpen(false)} fromId="work" />
     </Row>
   );
 }
 
-function RoleLine({ job }: { job: ExperienceItem }) {
+/** The role you're in now: logo, company, role, how long, and what Jay
+ *  actually does there (`doing`, four short lines). */
+function NowRole({ job }: { job: ExperienceItem }) {
   const { duration } = describePeriod(job.period);
   const logo = LOGOS[job.company];
   return (
-    <span className="bx-role">
-      <span className="gx-company-logo">
-        {logo ? <img src={logo} alt="" /> : <Briefcase aria-hidden="true" />}
-      </span>
-      <span className="bx-role-text">
-        <span className="bx-role-company">
-          <span className="lw-role-name">{job.company}</span>
-          {job.isCurrent && (
+    <span className="lw-now">
+      <span className="lw-now-head">
+        <span className="gx-company-logo">
+          {logo ? <img src={logo} alt="" /> : <Briefcase aria-hidden="true" />}
+        </span>
+        <span className="lw-now-who">
+          <span className="lw-now-company">
+            <span className="lw-role-name">{job.company}</span>
+          </span>
+          <span className="lw-now-role">
+            {job.role}
             <span className="gx-badge-current">
               <i aria-hidden="true" />
-              Current
+              Now
             </span>
-          )}
+          </span>
         </span>
-        <span className="bx-role-meta">
-          {job.role}
-          {duration && (
-            <>
-              <span className="gx-meta-sep" aria-hidden="true" />
-              <span className="gx-tabular">{duration}</span>
-            </>
-          )}
-        </span>
-        <span className="bx-role-headline">{job.headline}</span>
+        {duration && <span className="lw-now-dur gx-tabular">{duration}</span>}
       </span>
-      <ArrowUpRight className="bx-role-arrow" aria-hidden="true" />
+      {job.doing && (
+        <ul className="lw-doing">
+          {job.doing.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
     </span>
   );
 }
 
-/** Scrub the career bar: a playhead follows the pointer with the month and
- *  the role you were in then — and Stack follows the playhead. */
-function Playhead({ onFocus }: { onFocus: (f: Focus) => void }) {
-  const [at, setAt] = useState<{ x: number; frac: number; label: string } | null>(null);
-  const spans = experiences.map(spanOf);
-  const axisStart = Math.floor(Math.min(...spans.map((s) => s.start)) / 12) * 12;
-  const total = nowIndex() - axisStart;
-
-  const move = (e: PointerEvent<HTMLDivElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    const frac = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 0.9999);
-    const month = axisStart + Math.floor(frac * total);
-    // Latest-started role wins where two overlap (Jun–Jul 2024).
-    const here = experiences
-      .map((job, i) => ({ job, s: spans[i] }))
-      .filter(({ s }) => month >= s.start && month < s.end)
-      .sort((a, b) => b.s.start - a.s.start)[0]?.job;
-    const name = here ? here.company.replace(/ Info-Tech Pvt Ltd$/, '') : 'Between roles';
-    setAt({ x: e.clientX - r.left, frac, label: `${MONTHS[month % 12]} ${Math.floor(month / 12)} · ${name}` });
-    onFocus(here ? { company: here.company } : null);
-  };
-
+/** An earlier role on one quiet line: year, company, role, duration. */
+function PastRole({ job }: { job: ExperienceItem }) {
+  const { duration } = describePeriod(job.period);
+  const logo = LOGOS[job.company];
   return (
-    <div
-      className="lw-playhead-zone"
-      data-scrub={at ? '' : undefined}
-      onPointerMove={move}
-      onPointerLeave={() => {
-        setAt(null);
-        onFocus(null);
-      }}
-    >
-      <CareerBar />
-      {at && (
-        <>
-          <span className="lw-playhead" style={{ left: at.x }} />
-          {/* Sits in the year row (the years step aside), kept inside the box */}
-          <span className="lw-playhead-tag" style={{ left: at.x, translate: `${-at.frac * 100}% 0` }}>
-            {at.label}
-          </span>
-        </>
-      )}
-    </div>
+    <span className="lw-past">
+      <span className="lw-past-year gx-tabular">{job.period.split(' – ')[0].split(' ')[1]}</span>
+      <span className="gx-company-logo">
+        {logo ? <img src={logo} alt="" /> : <Briefcase aria-hidden="true" />}
+      </span>
+      <span className="lw-past-text">
+        <span className="lw-role-name">{job.company.replace(/ Info-Tech Pvt Ltd$/, '')}</span>
+        <span className="lw-past-role">{job.role}</span>
+      </span>
+      {duration && <span className="lw-past-dur gx-tabular">{duration}</span>}
+    </span>
   );
 }

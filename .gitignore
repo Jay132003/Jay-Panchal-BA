@@ -3,3 +3,6 @@ dist
 .DS_Store
 *.local
 .vercel
+
+# Jay's original photos (360 MB) — scripts/build-gallery.mjs makes the web copies
+photos-originals

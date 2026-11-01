@@ -4,12 +4,11 @@ import About from './About';
 import Impact from './Impact';
 import Playlists from './Playlists';
 import LiveWiringRow from './LiveWiring';
-import Skills, { Education } from './Skills';
+import Skills from './Skills';
 import SignOff from './SignOff';
-import CaseStudy from './CaseStudy';
+import CaseStudies from './CaseStudy';
 import Gallery from './Gallery';
 import Friends from './Friends';
-import { ActivityBox } from './Activity';
 import { Bento, Row } from './Bento';
 
 type HomePageProps = {
@@ -23,7 +22,8 @@ type HomePageProps = {
 };
 
 /** Landing page: one bento grid of ruled boxes. Rows 1–3 fill the first
- *  screen; the rest reveal on scroll. Row splits follow Jay's sketch. */
+ *  screen; the rest reveal on scroll. Below the fold (Nov 1): Experience |
+ *  Stack, Skills, Case studies, Gallery | Friends, On rotation, Sign-off. */
 export default function HomePage({ onCopyEmail, ready, revealDelay, nameFromIntro }: HomePageProps) {
   // Content follows the lines drawing in, row by row.
   const d = revealDelay + 0.35;
@@ -45,26 +45,22 @@ export default function HomePage({ onCopyEmail, ready, revealDelay, nameFromIntr
 
         {ready && (
           <>
-            <Row>
-              <Playlists />
-            </Row>
             <LiveWiringRow />
-            <Row cols="1fr 3fr">
-              <Education />
+            <Row>
               <Skills />
             </Row>
             <Row>
-              <CaseStudy />
+              <CaseStudies />
             </Row>
-            <Row cols="7fr 5fr">
+            <Row cols="1fr 1fr">
               <Gallery />
               <Friends />
             </Row>
             <Row>
-              <ActivityBox />
+              <Playlists />
             </Row>
             <Row>
-              <SignOff index={14} />
+              <SignOff index={12} closing />
             </Row>
           </>
         )}

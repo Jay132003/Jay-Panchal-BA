@@ -64,7 +64,54 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      tint across it (in from the left, out to the right) while the label rolls up letter by letter and the
      punchline (`LINKS[].quip` in Overview.tsx) rolls in beneath; the arrow swings to → in the tint. Jay
      rejected a solid black block (too harsh) — keep it soft. Quips ≤ ~35 chars. Off on touch.
-  4. On rotation turntable, full width — `Playlists.tsx`. Inside the grid it's a **compact, minimal row**
+  **Below the fold, rebuilt Nov 1 (two rounds).** Order: 05 Experience | 06 Stack · 07 Skills ·
+  08 Case studies · 09 Gallery · 10 Friends · 11 On rotation · 12 Sign-off (with Activity), all
+  full width after row 5. Education was removed from the landing (Jay's call).
+  5. Experience (11fr) | Stack (9fr) — `LiveWiring.tsx` (`lw-*` in `bento.css`). Rule: **hover only
+     adds — it never dims anything else**. Experience = current role (logo, company, role, "Now",
+     big duration) + **what Jay does there** (`doing` on the Neome entry in `portfolio.ts`, 4 lines)
+     + one quiet line per earlier role. **"Expand"** (top right) opens `ExperiencePanel.tsx` (`xp-*`):
+     a portal panel that grows out of the box's outline over a blurred page — role list on the left,
+     full `details` + tools on the right, ↑/↓ to switch, Esc/✕/backdrop to close; tabs on phones.
+     Stack = all 16 logos, 4×4. Hover a role → its tools turn to colour; hover a tool → the roles
+     that used it get an ink underline. Phones get a one-time tour through the roles.
+  6. Skills, full width — **"How I work"**, `Skills.tsx` (`hw-*`), all 17 skills (Jay wanted them
+     all back): three stages on a rail a beam runs along, skills tick on; hovering a skill shows its
+     proof line (`skillProof`) in a fixed-height footer; phones cycle through them.
+  6b. Case studies, full width — `CaseStudy.tsx` (default export `CaseStudies`, `cs2-*`/`ba-*` in
+     `life.css`). Left: index of `caseStudies` (data in `life.ts`) with each result number, and the
+     picked one's result + "Write-up coming soon" (or "Read the case" once `status: 'live'`). Right:
+     a **before/after board** — messy `before` scraps on a dotted board with a red dashed tangle,
+     wiped over by the calm `after` flow (nodes with a marching dashed connector, last one green ✓).
+     Drag anywhere / ←→ on the handle; it sweeps once when first seen. Fixed 440px. The three entries
+     are **drafts from the resume** — Jay to rewrite.
+  6c. Gallery | Friends, one row (`1fr 1fr`, Nov 1). Gallery — `Gallery.tsx` (`cr-*`, `lb-*` in
+     `life.css`): a **camera roll copied from marijanapav.com** (Jay asked for its exact UI and
+     animation, matched frame by frame to his screen recording of it): one endless strip of square
+     photos 16px apart, position `pos` a float in photos. **Soft swipe** follows the finger and
+     settles on the nearest photo (past 25% rolls on one), ~0.3s. **Hard swipe** throws it on by
+     release speed (`THROW` ms of travel, up to `MAX_THROW` 8 photos) and eases to a stop; while fast
+     the strip gets a horizontal SVG motion blur and leans (rotateY) away from travel, both scaled by
+     speed. Dots hand the pill over as `pos` passes. Grabbing mid-glide catches it where it is. dot click / ←→ jump. **View only** — clicking a photo opens nothing (Jay); "View all" is the
+     one button. Grabbing it mid-roll lands it first; neighbours preload with the panes' srcset. It rolls through `featuredPhotos`
+     in `life.ts` (12 file names — Jay can swap them). **No date stamps on photos** (Jay removed
+     them). Photos: originals in `photos-originals/` (git-ignored, 360 MB); run
+     `node scripts/build-gallery.mjs` (macOS `sips`) to make `public/assets/gallery/<name>-sm.jpg` +
+     `<name>.jpg` (named after the original) and regenerate `src/data/gallery.ts` (dates from
+     filenames; stale copies are deleted). To hide a photo, move its original into
+     `photos-originals/hidden/` and re-run (the book page "Limits of logic" is hidden that way).
+     **Gallery page** (`#gallery-page`): `PhotoWall.tsx` (`wall-*` in `life.css`), after a
+     masonry reference Jay liked (khushalk.xyz/gallery) — he tried a 3D photo globe first and swapped
+     it for this. Big rounded photos at their own shape in 3 columns (2 under 860px), each dealt to
+     the shortest column so columns end level; fade up on scroll; click → `Lightbox`; no captions or
+     dates on photos. `LifePage` takes `soon` / `stageAside`.
+  6c'. Friends (right half of that row) — `Friends.tsx`: the original Oct 25 shuffling `CardDeck`
+     + Coming soon (Jay tried polaroids on a string Nov 1 and went back to this) until `friends`
+     in `life.ts` has entries. The Friends page still uses Aceternity's Animated Testimonials.
+     All three have "View all →" to their pages (`LifePages.tsx`, `#case-studies`, `#gallery-page`,
+     `#friends-page`). Coming-soon pieces (`UntanglingBoard`, `DevelopingReel`, `CardDeck`) live in
+     `Soon.tsx` and are still used by those pages.
+  6d. On rotation turntable ("11"), full width — `Playlists.tsx`. Inside the grid it's a **compact, minimal row**
      (Oct 17, Jay: the grey stage and big deck were "too loud"): plain box background (no grey stage, no
      album-colour wash), 176px deck · song + hairline player · the two other records small. All via
      `.bx-rotation …` overrides in `bento.css`; `playlists.css` itself is unchanged.
@@ -75,48 +122,14 @@ CSS · `motion` (`motion/react`) for animation · `lucide-react` + `@tabler/icon
      (`src/lib/coverFlight.ts`, rAF-driven so it lands on the platter's live angle; the record shows
      bare vinyl via `data-incoming` until it lands; skipped under reduced motion or when the record is
      off-screen).
-  5. Experience (11fr) | Stack (9fr) — `LiveWiring.tsx` (`lw-*` in `bento.css`), Oct 23. Jay's rule
-     from that round: **hover only adds — it never dims anything else** (the old fades looked dull,
-     and a faded row let the cursor spotlight show through as a dark smudge). Career bar + one line per
-     role (logo, company, role · duration, `headline`) | 16 logos in a 4×4 hairline grid. **Hover a
-     role → its tools simply turn to colour in Stack** (plus a light cell tint) — nothing else. Jay
-     tried wires routed along the hairlines and then a ripple ring and found both "too much"; keep
-     this plain. Hover a tool → the roles that used it get an ink underline. One highlight springs
-     between role rows (motion `layoutId`); the Stack count rolls to "12 of 16 used"; scrubbing the
-     career bar shows a playhead (month · company, the years step aside) and lights that role's tools.
-     Phones (`hover: none`) get a one-time tour through the roles.
-  6. Education (1fr) | Skills (3fr) — **"How I work"** (Oct 23), `Skills.tsx` (`hw-*`). Education =
-     8 semester squares that fill in, then the CGPA rolls in on `Odometer` (now handles decimals) while
-     a gauge draws to it. Skills = three stages (Understand → Build → Land it) on a rail a beam runs
-     along; stage dots fill as it arrives, skills tick on like a checklist (check draws, text decodes
-     via `Scramble`). Hovering a skill shows its proof line (`skillProof` in `portfolio.ts`, drafted
-     from the resume — Jay may edit) in a fixed-height footer, so the row never changes height; phones
-     cycle through them. ≤900px the stages stack and the rail runs down their left edge.
-  6b. Case study, full width — `CaseStudy.tsx`, "10 — Case study". **Coming soon** (Oct 25): Jay is
-     writing a different case study (the first draft — a Neome workflow that untangled itself — was
-     dropped). Teaser = `UntanglingBoard` from `Soon.tsx`: research pieces (Notes, Interviews…) on a
-     dotted board, drifting between three arrangements on tangled wires.
-  6c. Gallery (7fr) | Friends (5fr) — "11 — Gallery", "12 — Friends". Both **coming soon** until Jay
-     sends content; they switch to the real thing on their own once `gallery` / `friends` in
-     `src/data/life.ts` have entries. Gallery teaser `DevelopingReel`: empty frames "developing" under a
-     darkroom-red veil; real `GalleryReel`: three photo columns drifting at different speeds with page
-     scroll (motion `useScroll` + `useSpring`, no Lenis — it would hijack the page's scrolling). Friends
-     teaser `CardDeck`: blank cards (photo slot, name/story lines, @coming.soon) that keep dealing
-     themselves; real version = Aceternity's Animated Testimonials, hand-added at
-     `src/components/ui/animated-testimonials.tsx` (no shadcn here), restyled; each friend = photo,
-     name, Instagram (linked) and one little story (`FRIEND_CARDS` in `Friends.tsx`).
-     All three boxes have **"View all →"** to their own pages (`LifePages.tsx`, hashes `#case-studies`,
-     `#gallery-page`, `#friends-page`, listed in `SUBPAGES` in `App.tsx` and in `main.tsx`): title box ·
-     big teaser · Next (Case studies → Gallery → Friends → Home) · sign-off. Styles `cs-*`, `gl-*`,
-     `at-*`, `soon-*` in `src/styles/life.css`.
-  7. Activity, full width — `ActivityBox` in `Activity.tsx` (`act-*` in `bento.css`), label "13 — Activity".
+  7. Activity — `Activity.tsx` (`act-*` in `bento.css`), since Nov 1 inside the landing's Sign-off box (`<SignOff closing />`).
      A year of squares from a **generated pattern** (Jay rarely uses GitHub and asked for one, Oct 17):
      deterministic per date, natural weekday/weekend/season rhythm, GitHub-style month labels and a
      Less→More legend. Hovering a square shows a box with the day and date only ("Wednesday · 1 July
      2026") and leaves a fading trail. Deliberately **no count, source or "GitHub" title**, so it never
      presents itself as real GitHub stats (Jay asked for a GitHub title; offered real data via his
      username instead). On phones it scrolls sideways, kept at the latest months.
-  8. Sign-off, full width — `SignOff.tsx`, label "14 — Sign-off" on the landing page: quote of the day + contact icons + Jay's
+  8. Sign-off, full width — `SignOff.tsx`, label "12 — Sign-off" on the landing page (`closing`: activity squares on top, no contact icons since Connect has them): quote of the day + contact icons + Jay's
      signature (the last row of every page; takes an `index` prop). Since Oct 25 there is no credits text
      (no "inspired by" names, no font credit — Jay's call): `SignedOff.tsx` writes Jay's real signature
      from `data/signature.ts` when it scrolls into view (click re-signs), over "Signed in Ahmedabad · © year". The old pixel "JP" cover (`ProfileCover.tsx`) was removed.

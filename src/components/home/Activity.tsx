@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
-import { Box } from './Bento';
 
 const WEEKS = 53;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -64,15 +63,6 @@ const tipText = (d: Date) =>
     month: 'long',
     year: 'numeric',
   })}`;
-
-/** Row of its own on the landing grid (split from the sign-off, Oct 17). */
-export function ActivityBox() {
-  return (
-    <Box index={13} label="Activity" className="bx-activity">
-      <Activity />
-    </Box>
-  );
-}
 
 /** A year of activity squares. Hovering darkens squares and leaves a fading
  *  trail (the playful bit carried over from the pixel "JP"), with a small box

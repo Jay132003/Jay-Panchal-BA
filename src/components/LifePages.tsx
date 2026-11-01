@@ -3,7 +3,7 @@ import { gallery } from '../data/life';
 import { AnimatedTestimonials } from './ui/animated-testimonials';
 import { Bento, Box, Row } from './home/Bento';
 import { FRIEND_CARDS } from './home/Friends';
-import { GalleryReel } from './home/Gallery';
+import PhotoWall from './home/PhotoWall';
 import NextPage from './home/NextPage';
 import SignOff from './home/SignOff';
 import { CardDeck, DevelopingReel, SoonBadge, UntanglingBoard } from './home/Soon';
@@ -19,9 +19,13 @@ type LifePageProps = {
   stageLabel: string;
   stage: ReactNode;
   next: { href: string; title: string; note: string };
+  /** Shows "Coming soon" by the title; off once the page has its real content. */
+  soon?: boolean;
+  /** Small note on the right of the stage's label row. */
+  stageAside?: ReactNode;
 };
 
-function LifePage({ label, title, intro, stageLabel, stage, next }: LifePageProps) {
+function LifePage({ label, title, intro, stageLabel, stage, next, soon = true, stageAside }: LifePageProps) {
   // No intro here: the lines start drawing as soon as the page is in.
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -33,13 +37,13 @@ function LifePage({ label, title, intro, stageLabel, stage, next }: LifePageProp
     <div className="bx-page">
       <Bento ready={ready} delay={0.05}>
         <Row>
-          <Box index={1} label={label} aside={<SoonBadge />} ready={ready} delay={0.2} className="bx-page-hero">
+          <Box index={1} label={label} aside={soon ? <SoonBadge /> : undefined} ready={ready} delay={0.2} className="bx-page-hero">
             <h1 className="bx-page-title">{title}</h1>
             <p className="bx-page-intro">{intro}</p>
           </Box>
         </Row>
         <Row>
-          <Box index={2} label={stageLabel} ready={ready} delay={0.35} className="soon-page-stage">
+          <Box index={2} label={stageLabel} aside={stageAside} ready={ready} delay={0.35} className="soon-page-stage">
             {stage}
           </Box>
         </Row>
@@ -80,13 +84,22 @@ export function CaseStudiesPage() {
 }
 
 export function GalleryPage() {
+  const years = gallery.map((p) => p.date.slice(0, 4)).filter(Boolean).sort();
   return (
     <LifePage
       label="Gallery"
       title="Through my lens."
-      intro="Streets, skies and whatever made me stop walking. Every photo here is one I took myself. They're still developing."
-      stageLabel="Darkroom"
-      stage={gallery.length ? <GalleryReel height={760} /> : <DevelopingReel height={760} />}
+      intro="Streets, skies, food, temples and whatever made me stop walking. Every photo here is one I took myself."
+      stageLabel="All photos"
+      soon={!gallery.length}
+      stageAside={
+        gallery.length ? (
+          <span>
+            {gallery.length} photos{years.length ? ` · ${years[0]}–${years[years.length - 1].slice(2)}` : ''}
+          </span>
+        ) : undefined
+      }
+      stage={gallery.length ? <PhotoWall /> : <DevelopingReel height={760} />}
       next={{ href: '#friends-page', title: 'Friends', note: 'The people behind the weekends' }}
     />
   );

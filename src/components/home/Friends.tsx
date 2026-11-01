@@ -13,8 +13,8 @@ export const FRIEND_CARDS = friends.map((f) => ({
   quote: f.story,
 }));
 
-/** Box 12 (Oct 25): a shuffling deck of blank cards until Jay sends his friends' photos. */
-export default function Friends({ index = 12 }: { index?: number }) {
+/** Box 10 (Oct 25; restored Nov 1 — Jay preferred it to the polaroids): a shuffling deck of blank cards until Jay sends his friends' photos. */
+export default function Friends({ index = 10 }: { index?: number }) {
   return (
     <Box index={index} label="Friends" aside={<ViewAll href="#friends-page" />} className="bx-friends">
       {FRIEND_CARDS.length ? (

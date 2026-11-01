@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'motion/react';
-import { GraduationCap } from 'lucide-react';
-import { capabilities, education, skillProof } from '../../data/portfolio';
+import { capabilities, skillProof } from '../../data/portfolio';
 import { Box } from './Bento';
-import { Odometer } from './Impact';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const STAGES = ['Understand', 'Build', 'Land it'];
@@ -53,7 +51,7 @@ function Scramble({ text, run, delay }: { text: string; run: boolean; delay: num
  *  A beam runs along the rail, each stage lights as it arrives and its skills
  *  tick on like a checklist. Hovering a skill shows where it was used, in a
  *  footer line of fixed height, so the row never changes size. */
-export default function Skills({ index = 9 }: { index?: number }) {
+export default function Skills({ index = 7 }: { index?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [hover, setHover] = useState<string | null>(null);
@@ -140,83 +138,6 @@ export default function Skills({ index = 9 }: { index?: number }) {
             </motion.p>
           </AnimatePresence>
         </div>
-      </div>
-    </Box>
-  );
-}
-
-const SEMESTERS = 8;
-const GAUGE_R = 84;
-const point = (frac: number): [number, number] => {
-  const a = Math.PI - Math.PI * frac;
-  return [100 + GAUGE_R * Math.cos(a), 100 - GAUGE_R * Math.sin(a)];
-};
-
-/** Education as a transcript (Oct 23): eight semester squares
- *  fill in, then the CGPA rolls in while a gauge draws to it. */
-export function Education({ index = 8 }: { index?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
-  const cgpa = Number(education.cgpa);
-  const end = Number(education.year);
-  const filled = SEMESTERS * 0.12 + 0.2;
-  const [dx, dy] = point(cgpa / 10);
-
-  return (
-    <Box index={index} label="Education" className="bx-edu hw-edu">
-      <div ref={ref} className="hw-edu-in" data-run={inView || undefined} style={{ '--filled': `${filled}s` } as CSSProperties}>
-        <div className="bx-edu-body">
-          <span className="gx-company-logo" aria-hidden="true">
-            <GraduationCap />
-          </span>
-          <p className="bx-edu-school">{education.school}</p>
-          <p className="bx-edu-degree">{education.degree.replace(/ \(BE\)$/, '')}</p>
-        </div>
-
-        <div className="hw-sems">
-          <ol aria-label={`Eight semesters, ${end - 4} to ${end}`}>
-            {Array.from({ length: SEMESTERS }, (_, i) => (
-              <li key={i} title={`Semester ${i + 1}`} style={{ '--at': `${i * 0.12}s` } as CSSProperties} />
-            ))}
-          </ol>
-          <p className="gx-tabular">
-            <span>{end - 4}</span>
-            <span>Class of {end}</span>
-          </p>
-        </div>
-
-        <figure className="hw-gauge" aria-label={`CGPA ${education.cgpa} out of 10`}>
-          <svg viewBox="0 0 200 106" aria-hidden="true">
-            <path className="hw-gauge-track" d={`M16,100 A${GAUGE_R},${GAUGE_R} 0 0 1 184,100`} />
-            {Array.from({ length: 9 }, (_, n) => {
-              const k = n + 1;
-              const a = Math.PI - (Math.PI * k) / 10;
-              const r1 = GAUGE_R - 9;
-              const r2 = GAUGE_R - (k % 5 === 0 ? 15 : 12);
-              return (
-                <line
-                  key={k}
-                  className="hw-gauge-tick"
-                  x1={100 + r1 * Math.cos(a)}
-                  y1={100 - r1 * Math.sin(a)}
-                  x2={100 + r2 * Math.cos(a)}
-                  y2={100 - r2 * Math.sin(a)}
-                />
-              );
-            })}
-            <path
-              className="hw-gauge-fill"
-              d={`M16,100 A${GAUGE_R},${GAUGE_R} 0 0 1 184,100`}
-              pathLength={10}
-              style={{ strokeDasharray: `${cgpa} 10`, '--cg': cgpa } as CSSProperties}
-            />
-            <circle className="hw-gauge-dot" cx={dx} cy={dy} r={4} />
-          </svg>
-          <figcaption>
-            <Odometer value={education.cgpa} start={inView} delay={filled} />
-            <span className="bx-edu-cgpa-label">CGPA / 10</span>
-          </figcaption>
-        </figure>
       </div>
     </Box>
   );

@@ -790,20 +790,10 @@ html.dark .bx-tool:has([src*="openai"], [src*="nextjs"], [src$="/notion"]) { --i
   .bx-tool-name { color: var(--text); }
 }
 
-/* Row 6 — education, skills */
-.bx-edu-body { display: flex; flex-direction: column; gap: 3px; }
-.bx-edu-body .gx-company-logo { margin-bottom: 12px; }
-.bx-edu-school {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -.02em;
-  text-wrap: balance;
-}
-.bx-edu-degree { margin: 0; font-size: 13px; line-height: 1.45; color: var(--muted); }
-/* Rows 7 and 8 — activity squares, then the sign-off (split Oct 17) */
-.bx-activity:hover { background: var(--bg); } /* the squares carry the hover */
+/* Closing box (Nov 1): activity squares over the quote and signature */
+.bx-signoff--closing .act { margin-bottom: 32px; }
+.bx-signoff--closing .bx-signoff-foot { justify-content: flex-end; }
+.bx-signoff--closing .bx-signed { align-items: flex-end; }
 
 /* Activity squares. Five shades mixed from the page's own text and
    background colours, so they follow light/dark mode. Hover leaves a trail. */
@@ -1287,7 +1277,6 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
 
   .bx-role-meta { font-size: 12px; }
 
-  .bx-edu { display: block; }
   .bx-quote p { font-size: 17px; }
   .bx-label-aside { font-size: 10.5px; }
 }
@@ -1299,7 +1288,7 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
 
 /* ═══════════════════════════════════════════════════════════════
    Rows 5 and 6 (Oct 23): Experience ↔ Stack (`lw-*`) and
-   "How I work" (`hw-*`, Education transcript + Skills pipeline). The rule
+   "How I work" (`hw-*`, the Skills pipeline). The rule
    everywhere: hover adds colour, motion or a connection — it never dims
    anything else.
    ═══════════════════════════════════════════════════════════════ */
@@ -1313,17 +1302,6 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
 }
 @keyframes lw-shimmer { from { background-position: 100% 0; } to { background-position: -50% 0; } }
 
-/* Roles: one highlight springs from row to row (motion layoutId) */
-.lw-roles > li { position: relative; isolation: isolate; }
-.lw-role-hl {
-  position: absolute;
-  inset: 0 -12px;
-  z-index: -1;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--text) 4.5%, transparent);
-}
-.lw-roles .bx-role { cursor: pointer; }
-.lw-roles > li:hover .bx-role-arrow { opacity: 1; translate: 0 0; color: var(--text); }
 /* A wire arriving from a tool underlines the company in ink */
 .lw-role-name {
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
@@ -1332,131 +1310,59 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
 .lw-roles > li[data-state="lit"] .lw-role-name {
   background-size: 100% 1.5px;
 }
-@keyframes lw-bump { 40% { transform: scale(1.14) rotate(-4deg); } }
-
-/* Scrubbing the career bar */
-.lw-playhead-zone { position: relative; cursor: ew-resize; }
-.lw-playhead {
-  position: absolute;
-  top: -4px;
-  bottom: 22px;
-  width: 1px;
-  background: var(--text);
-  pointer-events: none;
+/* Experience (Nov 1): the current role big, earlier roles one quiet line each */
+.lw-exp .bx-box-in { display: flex; flex-direction: column; }
+.lw-roles { flex: 1; display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.lw-roles > li { cursor: default; }
+.lw-roles > li[data-now] { flex: 1; padding-bottom: 22px; }
+.lw-roles > li:not([data-now]) { border-top: 1px solid var(--edge); }
+.lw-now { display: flex; flex-direction: column; height: 100%; }
+.lw-now-head { display: flex; align-items: center; gap: 14px; }
+.lw-now-head .gx-company-logo { width: 40px; height: 40px; border-radius: 10px; }
+.lw-now-who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.lw-now-company { font-size: 24px; font-weight: 600; line-height: 1.1; letter-spacing: -.04em; }
+.lw-now-role { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-family: var(--font-geist-mono); font-size: 12.5px; color: var(--muted); }
+.lw-now-role .gx-badge-current { margin: 0; }
+.lw-now-dur { flex: none; font-size: 36px; font-weight: 600; line-height: 1; letter-spacing: -.05em; }
+/* What Jay does there now — four lines, each led by a short ink rule */
+.lw-doing { margin: 22px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.lw-doing li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--text) 82%, var(--muted));
+  text-wrap: pretty;
 }
-.lw-playhead::after {
+.lw-doing li::before {
   content: '';
   position: absolute;
-  bottom: -3px;
-  left: -3px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--text);
+  left: 0;
+  top: .72em;
+  width: 10px;
+  height: 1.5px;
+  background: var(--ds-green-700);
 }
-.lw-playhead-tag {
-  position: absolute;
-  bottom: 1px;
-  padding: 2px 7px;
-  border-radius: 5px;
-  background: var(--text);
-  color: var(--bg);
-  font: 500 10.5px/1.3 var(--font-geist-mono);
-  white-space: nowrap;
-  pointer-events: none;
-}
-.lw-playhead-zone .bx-career-axis { transition: opacity 150ms ease; }
-.lw-playhead-zone[data-scrub] .bx-career-axis { opacity: 0; }
-.lw-exp .bx-box-in { overflow: visible; }
+.lw-expand { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+.lw-expand svg { width: 11px; height: 11px; }
+.lw-expand:hover svg { transform: scale(1.15); }
+.lw-past { display: flex; align-items: center; gap: 12px; padding: 13px 0; }
+.lw-roles > li:last-child .lw-past { padding-bottom: 0; }
+.lw-past-year { flex: none; width: 38px; font-family: var(--font-geist-mono); font-size: 12px; color: var(--muted); }
+.lw-past .gx-company-logo { width: 26px; height: 26px; }
+.lw-past-text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 10px; overflow: hidden; white-space: nowrap; }
+.lw-past-text .lw-role-name { font-size: 14px; font-weight: 600; letter-spacing: -.02em; }
+.lw-past-role { overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: var(--muted); }
+.lw-past-dur { flex: none; font-family: var(--font-geist-mono); font-size: 12px; color: var(--muted); }
+.lw-roles > li:hover .lw-past-dur,
+.lw-roles > li:hover .lw-past-year { color: var(--text); }
 
-/* Stack: tools boot into colour when their spark lands */
+/* Stack: the core eight, two rows of four */
+
 .lw-count { display: inline-block; margin: 0; font-family: var(--font-geist-mono); }
 /* Hovering a role just colours its tools — no lift, no motion */
 .lw-stack .bx-tool[data-state="lit"] .bx-tool-icon { transform: none; }
 .lw-stack .bx-tool[data-state="lit"] { background: var(--bx-tint); }
-
-/* ── Education: transcript ───────────────────────────────────── */
-
-.hw-edu-in { height: 100%; display: flex; flex-direction: column; }
-.hw-sems { margin-top: 18px; }
-.hw-sems ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
-}
-.hw-sems li {
-  aspect-ratio: 1;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--text) 6%, var(--bg));
-  transition: background-color 300ms ease, transform 420ms cubic-bezier(.34, 1.56, .64, 1);
-}
-.hw-edu-in[data-run] .hw-sems li {
-  background: color-mix(in srgb, var(--text) 40%, var(--bg));
-  transform: scale(1);
-  transition-delay: var(--at);
-  animation: hw-sem 420ms cubic-bezier(.34, 1.56, .64, 1) var(--at) backwards;
-}
-.hw-edu-in[data-run] .hw-sems li:last-child { background: var(--text); }
-@keyframes hw-sem { from { transform: scale(.4); } }
-.hw-sems p {
-  display: flex;
-  justify-content: space-between;
-  margin: 7px 0 0;
-  font-family: var(--font-geist-mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.hw-gauge { position: relative; margin: auto 0 0; padding-top: 20px; }
-.hw-gauge svg { display: block; width: 100%; overflow: visible; }
-.hw-gauge-track,
-.hw-gauge-fill { fill: none; stroke-width: 5; stroke-linecap: round; }
-.hw-gauge-track { stroke: color-mix(in srgb, var(--text) 7%, var(--bg)); }
-.hw-gauge-tick { stroke: color-mix(in srgb, var(--text) 30%, var(--bg)); stroke-width: 1; }
-.hw-gauge-fill {
-  stroke: var(--text);
-  stroke-dashoffset: var(--cg);
-  transition: stroke-dashoffset 1.9s cubic-bezier(.16, 1, .3, 1) var(--filled);
-}
-.hw-edu-in[data-run] .hw-gauge-fill { stroke-dashoffset: 0; }
-.hw-gauge-dot {
-  fill: var(--ds-green-700);
-  stroke: var(--bg);
-  stroke-width: 2;
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.hw-edu-in[data-run] .hw-gauge-dot {
-  animation: hw-dot 420ms cubic-bezier(.34, 1.56, .64, 1) calc(var(--filled) + 1.3s) forwards;
-}
-@keyframes hw-dot {
-  from { opacity: 1; transform: scale(0); }
-  to { opacity: 1; transform: scale(1); }
-}
-.hw-gauge figcaption {
-  position: absolute;
-  inset: auto 0 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.hw-gauge .bx-edu-cgpa-label {
-  font-family: var(--font-geist-mono);
-  font-size: 11px;
-  letter-spacing: .14em;
-  color: var(--muted);
-}
-.hw-gauge .bx-metric-value {
-  font-size: 38px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -.05em;
-}
 
 /* ── Skills: the "How I work" pipeline ───────────────────────── */
 
@@ -1613,7 +1519,9 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
   .hw-node { top: 2px; left: -22px; }
 }
 @media (max-width: 720px) {
-  .hw-gauge { max-width: 260px; margin-inline: auto; }
+  .lw-now-company { font-size: 20px; }
+  .lw-now-dur { font-size: 26px; }
+  .lw-past-role { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1621,5 +1529,132 @@ html.dark .bx-story .mark-coral { --hl: color-mix(in srgb, #e93d82 24%, transpar
   .bx-career-lane[data-state="lit"] .bx-career-bar { animation: none; background: var(--text); }
   .hw-pipe[data-run] .hw-rail-beam { animation: none; transform: scaleX(1); }
   .hw-pipe[data-run] .hw-check path { animation: none; stroke-dashoffset: 0; }
-  .hw-edu-in[data-run] .hw-sems li { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Experience → Expand (Nov 1, `xp-*`): a panel that grows out of the
+   box over the page. Lives in a portal, so it only uses global tokens.
+   ═══════════════════════════════════════════════════════════════ */
+.xp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.xp-panel {
+  position: fixed;
+  z-index: 301;
+  overflow: hidden;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / .25), 0 0 0 1px color-mix(in srgb, var(--text) 4%, transparent);
+}
+.xp-in { display: flex; flex-direction: column; height: 100%; }
+.xp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--edge);
+}
+.xp-head .bx-label { margin: 0; }
+.xp-head-actions { display: flex; align-items: center; gap: 16px; font-family: var(--font-geist-mono); font-size: 11.5px; }
+.xp-close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.xp-close:hover { background: var(--bx-tint, color-mix(in srgb, var(--text) 4%, var(--bg))); }
+.xp-close svg { width: 15px; height: 15px; }
+.xp-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); }
+.xp-roles { margin: 0; padding: 12px; list-style: none; border-right: 1px solid var(--edge); overflow-y: auto; }
+.xp-roles button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.xp-roles button:hover { background: color-mix(in srgb, var(--text) 3%, transparent); }
+.xp-roles button[data-on] { background: color-mix(in srgb, var(--text) 6%, transparent); }
+.xp-role-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.xp-role-company { font-size: 14px; font-weight: 600; letter-spacing: -.02em; }
+.xp-role-period { font-family: var(--font-geist-mono); font-size: 11.5px; color: var(--muted); }
+.xp-detail { overflow-y: auto; padding: 28px 32px 32px; }
+.xp-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 0;
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.xp-detail-where { display: inline-flex; align-items: center; gap: 4px; }
+.xp-detail-where svg { width: 12px; height: 12px; }
+.xp-detail-company {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 12px 0 0;
+  font-family: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -.04em;
+}
+.xp-detail-company .gx-badge-current { margin: 0; font-size: 11.5px; font-weight: 400; letter-spacing: 0; }
+.xp-detail-role { margin: 6px 0 0; font-size: 15px; color: var(--muted); }
+.xp-points { margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.xp-points li { position: relative; padding-left: 22px; font-size: 14.5px; line-height: 1.6; text-wrap: pretty; }
+.xp-points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .8em;
+  width: 10px;
+  height: 1.5px;
+  background: var(--ds-green-700);
+}
+.xp-tools { display: flex; flex-wrap: wrap; gap: 6px; margin: 26px 0 0; padding: 0; list-style: none; }
+.xp-tools li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  font-family: var(--font-geist-mono);
+  font-size: 11.5px;
+}
+html.dark .xp-tools img[src*="openai"], html.dark .xp-tools img[src*="nextjs"], html.dark .xp-tools img[src$="/notion"] { filter: invert(1); }
+@media (max-width: 720px) {
+  .xp-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .xp-roles { display: flex; gap: 4px; padding: 8px; border-right: 0; border-bottom: 1px solid var(--edge); overflow-x: auto; }
+  .xp-roles button { padding: 8px 10px; white-space: nowrap; }
+  .xp-role-period { display: none; }
+  .xp-detail { padding: 20px; }
+  .xp-detail-company { font-size: 24px; }
 }

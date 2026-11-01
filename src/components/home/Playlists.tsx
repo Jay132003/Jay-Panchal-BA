@@ -733,7 +733,7 @@ export default function Playlists() {
         onKeyDown={onKeyDown}
       >
         <BoxLabel
-          index={5}
+          index={11}
           label="On rotation"
           aside={
             <a className="pl-foot-link" href={playlistUrl(current.id)} target="_blank" rel="noreferrer">

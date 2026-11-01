@@ -31,6 +31,9 @@ export type ExperienceItem = {
   website?: string;
   linkedIn?: string;
   technologies?: { name: string; icon: string }[];
+  /** What Jay does there day to day — four short lines for the landing's
+   *  Experience box (current role only). Drafted from `details`, Nov 1. */
+  doing?: string[];
 };
 
 export const experiences: ExperienceItem[] = [
@@ -41,6 +44,12 @@ export const experiences: ExperienceItem[] = [
     location: 'Ahmedabad, India',
     isCurrent: true,
     headline: 'Shipped 100+ automation modules and automated 70% of manual work.',
+    doing: [
+      'Run requirement discovery — BRDs, FRDs and user stories',
+      'Design workflow rules, escalations and event-driven triggers',
+      'Own UAT cycles and go-live with engineering and QA',
+      'Build automated dashboards and reporting workflows',
+    ],
     website: 'https://neome.ai',
     linkedIn: 'https://www.linkedin.com/company/neome-ai/',
     technologies: [
